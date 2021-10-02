@@ -1,0 +1,256 @@
+\documentclass{article}
+\usepackage{amsmath} %This allows me to use the align functionality.
+                     %If you find yourself trying to replicate
+                     %something you found online, ensure you're
+                     %loading the necessary packages!
+\usepackage{amsfonts}%Math font
+\usepackage{graphicx}%For including graphics
+\usepackage{hyperref}%For Hyperlinks
+\hypersetup{colorlinks = true,citecolor=black}
+\usepackage{natbib}        %For the bibliography
+\bibliographystyle{apalike}%For the bibliography
+\usepackage[margin=1.0in]{geometry}
+\usepackage{float}
+\begin{document}
+\noindent \textbf{MA 354: Data Analysis -- Fall 2021 -- Due 10/8 at 5p}\\%\\ gives you a new line
+\noindent \textbf{Homework 2:}\vspace{1em}\\
+\emph{Complete the following opportunities to use what we've talked about in class. These questions will be graded for correctness, communication and succinctness. Ensure you show your work and explain your logic in a legible and refined submission.}\\\vspace{1em}
+%Comments -- anything after % is not put into the PDF
+
+The starting jobs will be applied in alphabetical order (last name) for question two.
+\begin{enumerate}
+  \item \textbf{Solver:} provide a solution, if possible, and reasoning for the solution. \textbf{Due to group 10/5 or earlier.}
+  \item \textbf{Code Checker:} provides a first check of the solver's worked solutions and ensures they are correct with a solid interpretation. 
+  \item \textbf{Checker} checks the solution for completeness, proposes and implements changes if agreed upon by the group. Provides a short paragraph summarizing the discussion of proposals and their reason for acceptance or non-acceptance.
+  \item \textbf{Double Checker} checks the solution for completeness, communication and polish. The Double Checker ensures that the solution is correct and highly polished for submission.
+\end{enumerate}
+
+\noindent For subsequent questions student roles will move down one position. The rolls change as follows.
+\begin{enumerate}
+  \item \textbf{Solver} $\Longrightarrow$ \textbf{Code Checker}
+  \item \textbf{Code Checker} $\Longrightarrow$ \textbf{Checker}
+  \item \textbf{Checker} $\Longrightarrow$ \textbf{Double Checker}
+  \item \textbf{Double Checker} $\Longrightarrow$ \textbf{Solver}
+\end{enumerate}
+While students have assigned jobs for each question I encourage students to help 
+each other complete the homework in collaboration.
+\newpage
+\begin{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  Question 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item\label{Q1} Select a continuous distribution (Not the uniform or exponential). 
+  It does not have to be one that we cover in the notes! To explore the PDF of your 
+  distribution, specify two sets of parameter(s) for your distribution.
+  \begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (a)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{History} Discuss what types of random variables are modeled with 
+  your distribution. Be sure to include a discussion about the support and ensure 
+  to provide the density function, and CDF. This requires some internet research 
+  -- what's the history of the distribution, why was it created and named? What 
+  are some exciting applications of this distribution?
+  
+  Cite all of your sources in LaTeX by adding a BibTeX citation to the .bib file. 
+  To help, I've cited R \citep{R21} in parentheses here. \cite{R21} provides helpful 
+  tools for the rest of the questions below. BibTeX citations are available through 
+  Google Scholar by clicking the cite button below the article of  interest and 
+  selecting the BibTeX option.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (b)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item Show that you have a valid PDF. You will find the \texttt{integrate()} 
+	function in \texttt{R} helpful.
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (c)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item Find the median for your two sets of parameter(s). Conduct some research 
+	to find the median based on our PDF to confirm that your numerical approach is 
+	correct. 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (d)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item \label{q1PDF} Graph the PDF for several values of the parameter(s) 
+	including the two sets you specified. What does changing the parameter(s) do 
+	to the shape of the PDF?
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (e)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	 \item Graph the CDF for the same values of the parameter(s) as you did in 
+	 Question \ref{q1PDF}. What does changing the parameter(s) do to the shape of 
+	 the CDF? Comment on the aspects of the CDFs that show that the CDF is valid.
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (f)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
+  two sets of parameter(s). In a $4 \times 2$ grid, plot a histogram of each set
+  of data and superimpose the true density function at the specified parameter 
+  values. Interpret the results.
+	\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  Question 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Continue with the continuous distribution you selected for Question \ref{Q1}.
+\begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (a)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Provide the mean, standard deviation, skewness, and kurtosis of the PDF.
+  Ensure to interpret each.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (b)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
+  two sets of parameter(s). Calculate the sample mean, standard deviation, 
+  skewness, and kurtosis. Interpret the results.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (c)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=10$ for your two sets of parameter(s).
+  Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
+  In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
+  of moments estimated distribution, (2) the maximum likelihood estimated 
+  distribution, and superimpose the true distribution in both.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (d)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=25$ for your two sets of parameter(s).
+  Calculate the method of moments estimator(s) and maximum likelihood estimator(s). 
+  In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
+  of moments estimated distribution, (2) the maximum likelihood estimated distribution, 
+  and superimpose the true distribution in both.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (e)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=100$ for your two sets of parameter(s). 
+  Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
+  In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
+  of moments estimated distribution, (2) the maximum likelihood estimated distribution,
+  and superimpose the true distribution in both.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (f)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=100$ for your two sets of parameter(s). 
+  Calculate the method of moments estimator(s) and maximum likelihood estimator(s). 
+  In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
+  of moments estimated distribution, (2) the maximum likelihood estimated distribution, 
+  and superimpose the true distribution in both.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (g)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Comment on the results of parts (c)-(f). 
+\end{enumerate}
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  Question 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item\label{Q3} Select a discrete distribution (not the Poisson). It does not 
+  have to be one that we cover in the notes! To explore the PMF of your distribution, 
+  specify two sets of parameter(s) for your distribution.
+  \begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (a)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{History} Discuss what types of random variables are modeled with 
+  your distribution. Be sure to include a discussion about the support and ensure
+  to provide the mass function, and CDF. This requires some internet research -- 
+  what's the history of the distribution, why was it created and named? What are
+  some exciting applications of this distribution? Cite all of your sources.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (b)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item Show that you have a valid PMF. You can show this approximately by 
+	calculating the series in a repeat loop until probability mass evaluations are 
+	infinitesimally small.
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (c)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item Find the median for your two sets of parameter(s). Conduct some research 
+	to find the median based on our PMF to confirm that your numerical approach is
+	correct. 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (d)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item \label{q3PMF} Graph the PMF for several values of the parameter(s) 
+	including the two sets you specified. What does changing the parameter(s) do 
+	to the shape of the PMF?
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (e)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	 \item Graph the CDF for the same values of the parameter(s) as you did in 
+	 Question \ref{q3PMF}. What does changing the parameter(s) do to the shape of 
+	 the CDF? Comment on the aspects of the CDFs that show that the CDF is valid.
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (f)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
+  two sets of parameter(s). In a $4 \times 2$ grid, plot a histogram (with bin 
+  size 1) of each set of data and superimpose the true mass function at the 
+  specified parameter values. Interpret the results.
+	\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  Question 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item Continue with the discrete distribution you selected for Question \ref{Q3}.
+\begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (a)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Provide the mean, standard deviation, skewness, and kurtosis of the PMF. 
+  Ensure to interpret each.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (b)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
+  two sets of parameter(s). Calculate the sample mean, standard deviation, 
+  skewness, and kurtosis. Interpret the results.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (c)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=10$ for your two sets of parameter(s).
+  Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
+  In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
+  with (1) the method of moments estimated distribution, (2) the maximum likelihood 
+  estimated distribution, and superimpose the true distribution in both.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (d)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=25$ for your two sets of parameter(s). 
+  Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
+  In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
+  with (1) the method of moments estimated distribution, (2) the maximum likelihood 
+  estimated distribution, and superimpose the true distribution in both.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (e)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=100$ for your two sets of parameter(s).
+  Calculate the method of moments estimator(s) and maximum likelihood estimator(s). 
+  In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
+  with (1) the method of moments estimated distribution, (2) the maximum likelihood
+  estimated distribution, and superimpose the true distribution in both.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (f)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=100$ for your two sets of parameter(s).
+  Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
+  In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
+  with (1) the method of moments estimated distribution, (2) the maximum likelihood
+  estimated distribution, and superimpose the true distribution in both.
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (g)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Comment on the results of parts (c)-(f). 
+\end{enumerate}
+\end{enumerate}%End overall enumerate
+\newpage
+\bibliography{bib}
+\end{document}
