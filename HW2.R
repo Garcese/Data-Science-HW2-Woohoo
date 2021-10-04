@@ -1,6 +1,6 @@
 x = seq(0, 25, length.out = 1000)
 plot(x, dgamma(x, shape = 5.4489, scale = 1.077325))
-#messing around -- this shape and scale is similar to normal distribution :)
+#messing around -- this shape and scale produces a gamma similar to normal distribution :)
 #Very cool
 
 
