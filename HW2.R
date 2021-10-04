@@ -1,0 +1,137 @@
+x = seq(0, 25, length.out = 1000)
+plot(x, dgamma(x, shape = 5.4489, scale = 1.077325))
+#messing around -- this shape and scale is similar to normal distribution :)
+#Very cool
+
+
+library(e1071)
+
+set.seed(1) #set seed to ensure re-testing
+
+n_10 = rgamma(10, shape = 1, scale =2)
+n_25 = rgamma(25, shape = 1, scale =2)
+n_100 = rgamma(100, shape =1, scale =2)
+n_1000 = rgamma(1000, shape =1, scale =2)
+#making random samples)
+
+mean(n_10)
+mean(n_25)
+mean(n_100)
+mean(n_1000)
+
+sd(n_10)
+sd(n_25)
+sd(n_100)
+sd(n_1000)
+
+skewness(n_10)
+skewness(n_25)
+skewness(n_100)
+skewness(n_1000)
+
+kurtosis(n_10)
+kurtosis(n_25)
+kurtosis(n_100)
+kurtosis(n_1000)
+
+gamma.MOM<-function(par, data){
+  #borrowed from Professor Cipolli
+  shape <- par[1]
+  scale <- par[2]
+  
+  EX1 <- scale*shape
+  EX2 <- (scale^2)*(shape * (shape +1))
+  #moments found online. Reminder to self: cite.
+  
+  xbar1 <- mean(data)
+  xbar2 <- mean(data^2)
+  
+  c(EX1-xbar1, EX2-xbar2)
+}
+
+gamma.LL<-function(par, data, neg=T){
+  #Also borrowed from Professor Cipolli
+  shape <- par[1]
+  scale <- par[2]
+  
+  ll <- sum(dgamma(x=data, shape = shape, scale = scale, log =T))
+  ifelse(neg, -ll, ll)
+}
+
+find.MOM.MLE = function(n, par){
+  Density = rgamma(n, shape = par[1], scale =par[2])
+  MOM = nleqslv(x = c(1,1),
+                fn = gamma.MOM, 
+                data = Density)
+  MLE = optim(par = c(1,1),
+              fn = gamma.LL,
+              data = Density)
+  #finds MOM and MLE for random data
+  
+  print(c(MOM$x, MLE$par))
+  #print for testing
+  
+  bw = 2 * IQR(Density) / length(Density)^(1/3)
+  #using Freedman-Diaconis rule which is found to be robust for histograms
+  #reminder to self: cite
+  
+  plot_MOM = ggplot() +
+       geom_histogram(aes(x= rgamma(n, shape = MOM$x[1], scale = MOM$x[2]),
+                          y= stat(count)/sum(count)),
+                      binwidth = bw,
+                      color = "mediumpurple", fill ="white")+
+       theme_minimal()+ ylab("Relative Frequency")+xlab("Observations")+
+       geom_hline(yintercept = 0)+
+    geom_line(aes(x= seq(0,20, 0.1),y = dgamma(seq(0,20, 0.1), shape = par[1],
+                                               scale = par[2])*bw),
+              color ="forestgreen", lwd = 0.7)+
+    ggtitle(paste("Methods of Moments Estimator n =", n, sep = " "))+
+    theme(plot.title = element_text(hjust = 0.5, size = 9))
+  #Note that I am plotting relative frequency. I converted density to 
+  #Relative Frequency by multiplying with bin width.
+  
+  plot_MLE = ggplot() +
+    geom_histogram(aes(x= rgamma(n, shape = MLE$par[1], scale = MLE$par[2]),
+                       y= stat(count)/sum(count)),
+                   binwidth = bw,
+                   color = "mediumpurple", fill ="white")+
+    theme_minimal()+ ylab("Relative Frequency")+xlab("Observations")+
+    geom_hline(yintercept = 0)+
+    geom_line(aes(x= seq(0,20, 0.1),y = dgamma(seq(0,20, 0.1), shape = par[1],
+                                               scale = par[2])*bw),
+              color ="forestgreen", lwd = 0.7)+
+    ggtitle(paste("Maximum Likelihood Estimator n =", n, sep=" ")) +
+    theme(plot.title = element_text(hjust = 0.5, size = 9))
+  
+  (plot_MOM + plot_MLE)
+}
+
+#Other random code I was working on. The following allows you to superimpose
+#all the distributions onto one plot. Feel free to use any of it!
+
+# colors = c("Methods of Moments" = "forestgreen",
+#            "Maximum Likelihood Estimator" = "red3")
+# linetypes = c("Methods of Moments" = 1,
+#               "Maximum Likelihood Estimator" = 2)
+# plot = ggplot() +
+#   geom_histogram(aes(x= Density, y= stat(count)/sum(count)),
+#                  binwidth = 2 * IQR(Density) / length(Density)^(1/3),
+#                  color = "mediumpurple", fill ="white")+
+#   theme_minimal()+ ylab("Relative Frequency")+xlab("Observations")+
+#   geom_hline(yintercept = 0)+
+#   geom_density(mapping = aes(x =rgamma(n, shape = MOM$x[1], scale = MOM$x[2]),
+#                              color = "Methods of Moments",
+#                              linetype = "Methods of Moments"), 
+#                lwd = 1) +
+#   geom_density(aes(x = rgamma(n, shape = MLE$par[1], MLE$par[2]),
+#                    color = "Maximum Likelihood Estimator",
+#                    linetype = "Maximum Likelihood Estimator"),
+#                lwd = 1)+
+#   labs(color = 'Type of Estimator', linetype = 'Type of Estimator')+
+#   scale_color_manual(values = colors ) +
+#   scale_linetype_manual(values = linetypes,guide =guide_legend(
+#     override.aes = list(linetype = c(1,2), shape = c(NA,NA))))+
+#   theme(legend.position = c(0.5, 0.8))
+# 
+# plot
+# 
