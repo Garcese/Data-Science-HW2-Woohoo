@@ -156,9 +156,9 @@ integrate(dgamma, 0, 1.386295, shape = 1, rate = 0.5)
 	 Question \ref{q1PDF}. What does changing the parameter(s) do to the shape of 
 	 the CDF? Comment on the aspects of the CDFs that show that the CDF is valid. \\
 	 
-Solution: \textbf{I answer both part d and e here.}
+Solution: \textbf{I answer both part d and e here. Below, I have graphed the probability distribution function for my two specified parameters, as well as other combination of parameters too.}
 	
-<<Question1-D,E>>=
+<<Question1-DE, eval=FALSE>>=
 library(tidyverse)              #Load necessary packages
 library(patchwork)
 
@@ -240,13 +240,168 @@ gg2 <- ggplot() +
 
 gg1 / gg2                        #Overlay the graphs nicely on top of eachother
 @
+\textbf{For the PDF, changing the shape parameter while keeping rate the same has the effect of making the distribution more platykurtic and more symmetrical (from visual inspection only). Increasing the rate while keeping the shape the same seems to shift more of the distribution towards the y-axis, making the PDF steeper and contain more of the probability for lower x-values. Low scale parameters causes the distribution to look more like the exponential distribution, which makes sense because the exponential distribution is actually  a special case of the gamma distribution \citep{wikipedia_2021}.} \\ 
+\textbf{Increasing the shape parameter results in the CDF taking on more $x$ values before asymptotically approaching a probability of one. This corresponds with my observation t hat increasing the shape results in a platykurtic distribution that is shifted outward. Increasing the rate has the opposite effect. A higher rate results in the CDF approaching one over fewer $x$ observations. This, again, aligns  with my observations of the PDF, since the  corresponding PDF was much more steep towards the y-axis for low rate values.} \\
+\textbf{We know the CDF is valid because for the various parameters graphed, all t he CDF curves approach one but do not exceed the value of one, which is theoretically correct since  the area under PDF curve is one. Furthermore, the CDFs do not intersect, I'm not sure if this is a property that is necessarily true for all CDFs though.}
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (f)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
   two sets of parameter(s). In a $4 \times 2$ grid, plot a histogram of each set
   of data and superimpose the true density function at the specified parameter 
-  values. Interpret the results.
+  values. Interpret the results. \\
+  
+Solution: \textbf{Below are the desired graphs. We can see that as the number of observations increases, the closer the data fits into the theoretical distribution curve.} 
+  
+<<Question1-F>>=
+library(ggplot2)
+library(patchwork)
+
+k <- seq(0, 20, 0.01)           #values we evaluate at
+dg.main <- dgamma(k, 1, 0.5)
+dg.2.0.5 <- dgamma(k, 2, 0.5)
+
+
+param.1.10 <- rgamma(10, shape = 1, rate = 0.5)
+param.1.25 <- rgamma(25, shape = 1, rate = 0.5)
+param.1.100 <- rgamma(100, shape = 1, rate = 0.5)
+param.1.1000 <- rgamma(1000, shape = 1, rate = 0.5)
+
+param.2.10 <- rgamma(10, shape = 2, rate = 0.5)
+param.2.25 <- rgamma(25, shape = 2, rate = 0.5)
+param.2.100 <- rgamma(100, shape = 2, rate = 0.5)
+param.2.1000 <- rgamma(1000, shape = 2, rate = 0.5)
+
+den <- density(x)
+
+dat <- data.frame(x = den$x, y = den$y)
+
+# Plot density as points
+
+graph1 <- ggplot() +
+  geom_histogram(data = as.data.frame(param.1.10), aes(x=param.1.10, y=..density..),
+                 binwidth=0.5,
+                 breaks=seq(0,20,0.25)) +
+  geom_line(aes(k, dg.main),
+            color="red") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label 
+   xlab("X values") +
+  ggtitle("Gamma density n = 10",
+          subtitle = "Shape = 1, Rate = 0.5")   #Title
+
+graph2 <- ggplot() +
+  geom_histogram(data = as.data.frame(param.1.25), aes(x=param.1.25, y=..density..),
+                 binwidth=0.5,
+                 breaks=seq(0,20,0.25)) +
+  geom_line(aes(k, dg.main),
+            color="red") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label 
+   xlab("X values") +
+  ggtitle("Gamma density n = 25",
+          subtitle = "Shape = 1, Rate = 0.5")   #Title
+
+graph3 <- ggplot() +
+  geom_histogram(data = as.data.frame(param.1.100), aes(x=param.1.100, y=..density..),
+                 binwidth=0.5,
+                 breaks=seq(0,20,0.25)) +
+  geom_line(aes(k, dg.main),
+            color="red") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label 
+   xlab("X values") +
+  ggtitle("Gamma density n = 100",
+          subtitle = "Shape = 1, Rate = 0.5")   #Title
+
+graph4 <- ggplot() +
+  geom_histogram(data = as.data.frame(param.1.1000), aes(x=param.1.1000, y=..density..),
+                 binwidth=0.5,
+                 breaks=seq(0,20,0.25)) +
+  geom_line(aes(k, dg.main),
+            color="red") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label 
+   xlab("X values") +
+  ggtitle("Gamma density n = 1000",
+          subtitle = "Shape = 1, Rate = 0.5")   #Title
+
+graph5 <- ggplot() +
+  geom_histogram(data = as.data.frame(param.2.10), aes(x=param.2.10, y=..density..),
+                 binwidth=0.5,
+                 breaks=seq(0,20,0.25)) +
+  geom_line(aes(k, dg.2.0.5),
+            color="red") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label 
+   xlab("X values") +
+  ggtitle("Gamma density n = 10",
+          subtitle = "Shape = 2, Rate = 0.5")   #Title
+
+graph6 <- ggplot() +
+  geom_histogram(data = as.data.frame(param.2.25), aes(x=param.2.25, y=..density..),
+                 binwidth=0.5,
+                 breaks=seq(0,20,0.25)) +
+  geom_line(aes(k, dg.2.0.5),
+            color="red") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label 
+   xlab("X values") +
+  ggtitle("Gamma density n = 25",
+          subtitle = "Shape = 2, Rate = 0.5")   #Title
+
+graph7 <- ggplot() +
+  geom_histogram(data = as.data.frame(param.2.100), aes(x=param.2.100, y=..density..),
+                 binwidth=0.5,
+                 breaks=seq(0,20,0.25)) +
+  geom_line(aes(k, dg.2.0.5),
+            color="red") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label 
+   xlab("X values") +
+  ggtitle("Gamma density n = 100",
+          subtitle = "Shape = 2, Rate = 0.5")   #Title
+
+graph8 <- ggplot() +
+  geom_histogram(data = as.data.frame(param.2.1000), aes(x=param.2.1000, y=..density..),
+                 binwidth=0.5,
+                 breaks=seq(0,20,0.25)) +
+  geom_line(aes(k, dg.2.0.5),
+            color="red") +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label
+  xlab("X values") +
+  ggtitle("Gamma density n = 1000",
+          subtitle = "Shape = 2, Rate = 0.5")   #Title
+
+
+graph1 + graph2 + graph3 + graph4 + graph5 + graph6  + graph7 + graph8 +
+  plot_layout(ncol = 2)
+@
 	\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
