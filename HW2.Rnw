@@ -62,12 +62,12 @@ each other complete the homework in collaboration.
   Google Scholar by clicking the cite button below the article of interest and 
   selecting the BibTeX option. \\
   
-  Solution: \textbf{The Gamma distribution models the probability that $\alpha$ events occur in a Poisson process with mean arrival time \large $\beta = \frac{1}{\theta}$, $\theta$ \normalsize a scale parameter. \citep{analytica_wiki}. The probability density function, which is a function of the random variable $x$, and our parameters $\alpha$ and $\beta$ is given in the equation below: (provided by \cite{wikipedia_2021})}
+Solution: \textbf{The Gamma distribution models the probability that $\alpha$ events occur in a Poisson process with mean arrival time \large $\beta = \frac{1}{\theta}$, $\theta$ \normalsize a scale parameter. \citep{analytica_wiki}. The probability density function, which is a function of the random variable $x$, and our parameters $\alpha$ and $\beta$ is given in the equation below: (provided by \cite{wikipedia_2021})}
 \begin{align}
   \includegraphics[scale=0.3]{Gamma_PDF.png}
 \end{align}
 
-\textbf{Where $\Gamma (\alpha)$ is the Gamma function. The restrictions on the parameters and random variable comes from the need for the PDF to have positive values only. $x$, $\beta \; > 0$ ensures the numerator is positive, and $\alpha \; > 0$ ensures the denominator is positive, since \large $\Gamma (x) > 0\; \forall \;x\; \in \mathbb{R^+}$. \normalsize $x > 0$ is the support of the distribution - The random variable must be a positive real number. The cumulative distribution function is given below: (provided by \cite{wikipedia_2021})} 
+\textbf{Where $\Gamma (\alpha)$ is the Gamma function. The restrictions on the parameters and random variable comes from the need for the PDF to have positive values only. $x$, $\beta \; > 0$ ensures the numerator is positive, and $\alpha \; > 0$ ensures the denominator is positive, since \large $\Gamma (x) > 0\; \forall \;x\; \in \mathbb{R^+}$. \normalsize $x > 0$ is the support of the distribution - The random variable must be a positive real number. Note some probability distribution function definitions include a location parameter $\epsilon$, which is subtracted from the random variable $x$ and essentially moves the distribution left and right for various values. I have omitted it in the equation above since most sources keep the distribution bounded by 0. The cumulative distribution function is given below: (provided by \cite{wikipedia_2021})} 
 \begin{align}
   \includegraphics[scale=0.7]{Gamma_CDF.png}
 \end{align}
@@ -77,33 +77,169 @@ each other complete the homework in collaboration.
   \includegraphics[scale=0.7]{Lower_Gamma.png}
 \end{align}
 
-\textbf{The Gamma distribution is named after the Gamma function, which is principle in it's derivation. The Gamma function is a function that extends the idea of the factorial to all real numbers and even complex numbers, provided that any real input is not a non-negative integer. For positive real inputs, (which is the support for the Gamma distribution), the Gamma function draws a continuous line through all points in the $(x,y)$ plane whose $x$ value is an integer and $y$ value equals $x!$.}\\
+\textbf{The Gamma distribution is named after the Gamma function, which is principle in it's derivation. The Gamma function is a function that extends the idea of the factorial to all real numbers and even complex numbers, provided that any real input is not a non-negative integer. For positive real inputs, (which is the support for the Gamma distribution), the Gamma function draws a continuous line through all points in the $(x,y)$ plane whose $x$ value is an integer and $y$ value equals $(x + 1)!$.}\\
 
-\textbf{The Gamma function is good at modeling any continuous random variable that takes on positive real values, is uni-modal, and is positively skewed. The Gamma distribution is frequently used in climatology to model random whether variables such as rainfall \citep{thom1958note}. It has also been used to model the size of insurance claims \citep{boland2007statistical}, multi-path fading of of signal power in wireless communication \citep{wikipedia_2021}, and the age distribution of cancer incidence \citep{belikov2017number}, to name just a few of its applications.} \\ 
+\textbf{The Gamma function is good at modeling any continuous random variable that takes on positive real values, is uni-modal, and is positively skewed. The Gamma distribution is frequently used in climatology to model random whether variables such as rainfall
+\citep{thom1958note}. It has also been used to model the size of insurance claims \citep{boland2007statistical}, multi-path fading of of signal power in wireless communication \citep{wikipedia_2021}, and the age distribution of cancer incidence \citep{belikov2017number}, to name just a few of its applications.} \\ 
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (b)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\item Show that you have a valid PDF. You will find the \texttt{integrate()} 
-	function in \texttt{R} helpful.
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	function in \texttt{R} helpful. \\
+	
+Solution: \textbf{A valid PDF must not take on negative values and must integrate to one. I explained in part A that it is impossible for the PDF to take on a negative value provided that our random variable $x$ and our scale and rate parameters $\alpha$ and $\beta$ are all greater than zero. With this established, we can test in R whether the PDF integrated from 0 to $\infty$ (our support) equals one. } 
+
+<<Question1-B>>=
+options(scipen=999)                                 #Remove scientific notation
+gammaPDF <- function(x, a, b) {                     #define PDF function ourself
+  (1/(gamma(a)))*(b^a)*(x^(a-1))*(exp(1)^(-b*x))    #a is shape, b is rate.
+}
+ 
+gammaPDF(1, 1, 0.5)                                 
+dgamma(1, 1, 0.5)                
+#We see the value for the built in gamma density function dgamma() is the dame as ours 
+integrate(gammaPDF, 0, Inf, a = 1, b = 0.5)
+integrate(dgamma, 0, Inf, shape = 1, rate = 0.5)
+#Furthermore, when we integrate  from 0 to Inf we get 1, which is expected.
+#string.of.ones <- NULL
+#for (i in 1:100) {
+  #for (j in 1:100) {
+    #string.of.ones <- c(string.of.ones, integrate(gammaPDF, 0, Inf, a = i, b = j)[1])
+  #}
+#}
+integrate(gammaPDF, 0, Inf, a = 70, b = 1)           #We get a strange error
+integrate(dgamma, 0, Inf, shape = 70, rate = 1)      #works for R function tho
+
+string.of.ones.redo <- NULL
+for (i in 1:100) {
+  for (j in 1:100) {
+    string.of.ones.redo <- c(string.of.ones.redo, integrate(dgamma, 0, Inf, shape = i, rate = j)[1])
+  }
+}
+sum(string.of.ones.redo > 0.999999)
+sum(string.of.ones.redo < 1.000001)                  #6 Values are not 1.
+which(string.of.ones.redo < 0.999999)                #which values
+string.of.ones.redo[9602]                            #It's close to 0 instead.
+integrate(dgamma, 0, Inf, shape = 97, rate = 2)      #Why is this?
+@
+
+\textbf{In the code above, I defined my own Gamma PDF function \texttt{gammaPDF()}, so that I could compare that to the built in \texttt{dgamma()} function that \texttt{R} uses. They return identical values for $\alpha  = 1$ and $\beta = 2$ and both integrate to one. I tried running some for loops to set the integral for various values of $\alpha$ and $\beta$. This is the commented out code. I got an error when computing the integral for large shape values and low rate values when using my own defined function. I'm not sure why this is -- I am sure it has something to do with \texttt{R}'s definition of the Gamma PDF being more clean and polished than my own, since I get no error when running that.}\\
+
+\textbf{I ran the for loop for the built in \texttt{R} density  function and the outputted values did not all equal 1 because of a strange rounding issue, but we can see that functionally most of them are one, but I assume \texttt{R} does some approximating when calculating integrals, so they are bounded below by 0.999999 and above by 1.000001. There were, however, six values that weren't one, and in fact they were all close to 0. You can see on the last line of code that the integral should equate to 1, but doesn't, it equals approximately zero. I have no idea why this -- or why it only occurred for six values of $\alpha$ and $\beta$. I am going to assume this is an \texttt{R} mistake, perhaps something do with numbers being too small and messing with \texttt{R}'s logic.} \\
+
+\textbf{From a theoretical standpoint, the reason the Gamma probability density function integrates to one follows very quickly from some algebra on the Gamma function itself. Essentially, you divide by the gamma function on two sides of an equation, leaving you with one on one side, and a division by the Gamma function on the other, which is exactly what is in the PDF. \href{https://www.youtube.com/watch?v=gIsoceE4vhg&t=144s&ab_channel=LawrenceLeemis}{This} YouTube video explains it better at about one minute.}
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (c)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\item Find the median for your two sets of parameter(s). Conduct some research 
 	to find the median based on our PDF to confirm that your numerical approach is 
-	correct. 
+	correct. \\
+	
+Solution: \textbf{My set of parameters will be $\alpha$ (shape) equals 1, and $\beta$ (rate) equals 0.5. In the code below, I use the \texttt{qgamma()} function in \texttt{R} to calculate the 50th quantile of the distribution, which is the median. It is approximately 1.386295. We can test this is correct by integrating the PDF from 0 to 1. We get approximately 0.5 which affirms our answer.}
+<<Question1-C>>=
+qgamma(0.5, 1, 0.5)
+integrate(dgamma, 0, 1.386295, shape = 1, rate = 0.5)   
+@
+\textbf{There is no closed-form solution for calculating the median -- Only numerical estimates are possible. There are ways to approximate the median using the mean, but still no closed form solution \citep{wikipedia_2021}. A plethora of interesting properties have been discovered about the median, such as finding an asymptotic formula for the median, connecting the median to the Ramanujan sequence, and many other ways to bound the median, or expand it asymptotically \citep{YOU2017487}.} 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (d)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\item \label{q1PDF} Graph the PDF for several values of the parameter(s) 
 	including the two sets you specified. What does changing the parameter(s) do 
 	to the shape of the PDF?
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (e)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	 \item Graph the CDF for the same values of the parameter(s) as you did in 
 	 Question \ref{q1PDF}. What does changing the parameter(s) do to the shape of 
-	 the CDF? Comment on the aspects of the CDFs that show that the CDF is valid.
+	 the CDF? Comment on the aspects of the CDFs that show that the CDF is valid. \\
+	 
+Solution: \textbf{I answer both part d and e here.}
+	
+<<Question1-D,E>>=
+library(tidyverse)              #Load necessary packages
+library(patchwork)
+
+x <- seq(0, 20, 0.01)           #values we evaluate at
+dg.main <- dgamma(x, 1, 0.5)
+dg.1.2 <- dgamma(x, 1, 2)
+dg.1.5 <- dgamma(x, 1, 5)
+dg.2.0.5 <- dgamma(x, 2, 0.5)
+dg.3.0.5 <- dgamma(x, 3, 0.5)
+dg.4.0.5 <- dgamma(x, 4, 0.5)
+#above is the density curve evaluated at vec x for various parameters
+gg1 <- ggplot() + 
+  geom_line(aes(x, dg.main, colour="Scale = 1, Rate = 0.5")) +
+  geom_line(aes(x, dg.1.2, colour="Scale = 1, Rate = 2")) +
+  geom_line(aes(x, dg.1.5, colour="Scale = 1, Rate = 5")) +
+  geom_line(aes(x, dg.2.0.5, colour="Scale = 2, Rate = 0.5")) +
+  geom_line(aes(x, dg.3.0.5, colour="Scale = 3, Rate = 0.5")) +
+  geom_line(aes(x, dg.4.0.5, colour="Scale = 4, Rate = 0.5")) +
+  scale_color_manual(name = "Parameter Values", 
+                     values = c("Scale = 1, Rate = 0.5" = "red", 
+                                "Scale = 1, Rate = 2" = "orange", 
+                                "Scale = 1, Rate = 5" = "yellow",
+                                "Scale = 2, Rate = 0.5" = "green",
+                                "Scale = 3, Rate = 0.5" = "blue",
+                                "Scale = 4, Rate = 0.5" = "purple"
+                               )
+                     ) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  ylim(c(0, 0.5)) +                                            #Limit y we see
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Density") +                                            #y-axis label 
+  ggtitle("Gamma DistributionProbability Density Function")    #Title
+
+#The code below calculates the CDF for values in the x vector defined above.
+#The code is a bit cumbersome - most  likely a cleaner way to do this.
+cg.main <- NULL
+  for (i in x) {cg.main <- c(cg.main, integrate(dgamma, 0, i, shape = 1, rate = 0.5)[1])}
+  cg.main <- unlist(cg.main)
+cg.1.2 <- NULL
+  for (i in x) {cg.1.2 <- c(cg.1.2, integrate(dgamma, 0, i, shape = 1, rate = 2)[1])}
+  cg.1.2 <- unlist(cg.1.2)
+cg.1.5 <- NULL
+  for (i in x) {cg.1.5 <- c(cg.1.5, integrate(dgamma, 0, i, shape = 1, rate = 5)[1])}
+  cg.1.5 <- unlist(cg.1.5)
+cg.2.0.5 <- NULL
+  for (i in x) {cg.2.0.5 <- c(cg.2.0.5, integrate(dgamma, 0, i, shape = 2, rate = 0.5)[1])}
+  cg.2.0.5 <- unlist(cg.2.0.5)
+cg.3.0.5 <- NULL
+  for (i in x) {cg.3.0.5 <- c(cg.3.0.5, integrate(dgamma, 0, i, shape = 3, rate = 0.5)[1])}
+  cg.3.0.5 <- unlist(cg.3.0.5)
+cg.4.0.5 <- NULL
+  for (i in x) {cg.4.0.5 <- c(cg.4.0.5, integrate(dgamma, 0, i, shape = 4, rate = 0.5)[1])}
+  cg.4.0.5 <- unlist(cg.4.0.5)
+
+gg2 <- ggplot() + 
+  geom_line(aes(x, cg.main, colour="Scale = 1, Rate = 0.5")) +
+  geom_line(aes(x, cg.1.2, colour="Scale = 1, Rate = 2")) +
+  geom_line(aes(x, cg.1.5, colour="Scale = 1, Rate = 5")) +
+  geom_line(aes(x, cg.2.0.5, colour="Scale = 2, Rate = 0.5")) +
+  geom_line(aes(x, cg.3.0.5, colour="Scale = 3, Rate = 0.5")) +
+  geom_line(aes(x, cg.4.0.5, colour="Scale = 4, Rate = 0.5")) +
+  scale_color_manual(name = "Parameter Values", 
+                     values = c("Scale = 1, Rate = 0.5" = "red", 
+                                "Scale = 1, Rate = 2" = "orange", 
+                                "Scale = 1, Rate = 5" = "yellow",
+                                "Scale = 2, Rate = 0.5" = "green",
+                                "Scale = 3, Rate = 0.5" = "blue",
+                                "Scale = 4, Rate = 0.5" = "purple"
+                               )
+                     ) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
+  geom_hline(yintercept=0) +                                   #line on x-axis
+  geom_vline(xintercept=0) +                                   #Line on y-axis
+  ylab("Cumulative Density") +                                 #Y-axis label
+  ggtitle("Gamma Distribution Cumulative Density Function")    #Title
+
+gg1 / gg2                        #Overlay the graphs nicely on top of eachother
+@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (f)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,3 +412,8 @@ each other complete the homework in collaboration.
 \newpage
 \bibliography{bib}
 \end{document}
+
+
+
+
+
