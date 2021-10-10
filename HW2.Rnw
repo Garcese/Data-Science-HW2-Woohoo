@@ -102,12 +102,102 @@ each other complete the homework in collaboration.
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Provide the mean, standard deviation, skewness, and kurtosis of the PDF.
   Ensure to interpret each.
+  \textbf{Solution: I want to thank Giancarlo for his help with this!}\\
+  I used the moments from Wikipedia. Note that $shape = k$ and $scale = \theta$. $location = \epsilon$, which determines the lower bound for the distribution. We assume $\epsilon = 0$.
+The moments are:\\
+\begin{align} \large
+    Mean &= \epsilon + \theta \cdot k\\
+    Standard\;Deviation &= \theta \cdot \sqrt{k}\\
+    Skewness &= \frac{2}{\sqrt{k}}\\
+    Kurtosis &= 3 + \frac{6}{k}
+\end{align} \\
+\indent  For our parameter sets, which are shape = 1, scale = 2 (rate = 0.5), shape = 3, scale = 1 (rate = 1), the values are calculated in Figure \ref{fig:matrix} below. (Note: We take the location parameter, $\epsilon$, to be 0 for both):\\
+\begin{figure}[h]
+$$
+\Large
+    \begin{bmatrix}
+        Parameters \; (k, \theta) & Mean & Standard\;Deviation & Skewness & Kurtosis\\
+        (1, 2) & 2 & 2 & 2 & 9 \\
+        (3, 1) & 3 & \sqrt{3} & \frac{2\sqrt{3}}{3} & 5
+    \end{bmatrix}
+$$
+\caption{Mean, Standard deviation, Skewness, and Kurtosis for our parameter sets.}
+\label{fig:matrix}
+\end{figure} \\
+\\
+\\
+  \textbf{Interpretation:}\\
+  The mean for the Gamma distribution, calculated using the formula above, informs us about the central tendency of the distribution, depending on shape and scale. Because the gamma distribution is right-skewed for both sets of parameters that we are using, I would consider the median to be a more accurate measure of the central tendency. The standard deviation, calculated by $\sqrt{variance}$, tells us about the variability in the gamma distribution about the center. The skewness refers to the symmetry of the distribution -- a high skewness corresponds to a less symmetric distribution. In the case of our parameters, I would expect to see a positive value for skewness because the distributions are right skewed, and have a long tail pointing towards the right (which is true based on our calculation). As for kurtosis, this measure refers to the peak of the distribution. A distribution is leptokurtic, if it has a tall peak and a kurtosis greater than 3 (so excess kurtosis is positive), whereas a distribution is platykurtic if the peak is flat, and the kurtosis is less than 3 (excess kurtosis is negative). Since our calculations show that kurtosis is greater than 3, our distributions will be leptoku 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (b)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
   two sets of parameter(s). Calculate the sample mean, standard deviation, 
-  skewness, and kurtosis. Interpret the results.
+  skewness, and kurtosis. Interpret the results.\\
+  \textbf{Solution:}\\
+  I used e1071 in this code \citep{e1071}. Note that the kurtosis() function here provides excess kurtosis, which is found by subtracting 3 from the kurtosis.\\
+  <<warning = F>>=
+  library(e1071)
+
+  set.seed(1) #set seed to ensure re-testing
+  
+  n_10 = rgamma(10, shape = 1, scale =2)
+  n_25 = rgamma(25, shape = 1, scale =2)
+  n_100 = rgamma(100, shape =1, scale =2)
+  n_1000 = rgamma(1000, shape =1, scale =2)
+  #making random samples
+  
+  mean(n_10)
+  mean(n_25)
+  mean(n_100)
+  mean(n_1000)
+  
+  sd(n_10)
+  sd(n_25)
+  sd(n_100)
+  sd(n_1000)
+  
+  skewness(n_10)
+  skewness(n_25)
+  skewness(n_100)
+  skewness(n_1000)
+  
+  kurtosis(n_10)
+  kurtosis(n_25)
+  kurtosis(n_100)
+  kurtosis(n_1000)
+  
+  
+  n_10 = rgamma(10, shape = 3, scale =1)
+  n_25 = rgamma(25, shape = 3, scale =1)
+  n_100 = rgamma(100, shape =3, scale =1)
+  n_1000 = rgamma(1000, shape =3, scale =1)
+  
+  mean(n_10)
+  mean(n_25)
+  mean(n_100)
+  mean(n_1000)
+  
+  sd(n_10)
+  sd(n_25)
+  sd(n_100)
+  sd(n_1000)
+  
+  skewness(n_10)
+  skewness(n_25)
+  skewness(n_100)
+  skewness(n_1000)
+  
+  kurtosis(n_10)
+  kurtosis(n_25)
+  kurtosis(n_100)
+  kurtosis(n_1000)
+  @
+  \\
+  \textbf{Interpretation:}
+  For the mean of the first parameter set (shape = $1$, scale = $2$), we see that the mean and the standard deviation get closer to the true mean and standard deviation of $2$ as $n$ increases to a $1000$. For the skewness, the value is very low at $n = 10$, and it gets closest to the true skewness at $n = 25$, but then slightly deviates from the true value. The skewness here is positive, which indicates that the distribution is right-skewed (which I had expected based on the visual inspection). The excess kurtosis is negative at $n = 10$, indicating that for this parameter, the distribution is platykurtic. However, as $n$ increases, the excess kurtosis becomes positive, indicating that now, the distribution is leptokurtic. The excess kurtosis at $n = 25$ is closest to the true kurtosis of 9 (note, I added 3 to translate between the two), but then as $n$ increases, the kurtosis deviates and then comes closer to the true value, similar to what we saw for skewness.\\
+   For the mean of the second parameter set (shape = $3$, scale = $1$), we see that the mean and the standard deviation get closer to the true mean of $3$ as $n$ approaches $1000$ and standard deviation of $\sqrt{3} \approx 1.73$ at $n =100$. At $n =1000$, the standard deviation moves slightly away from the true value. For the skewness, the value is low for $n = 10$ and $n = 25$, but gets closest to the true skewness of $\frac{2\sqrt{3}}{3} \approx 1.15$ at $n = 100$, but then slightly deviates from the true value (similar to standard deviation). The skewness here is positive, which indicates that the distribution is right-skewed (which I had expected based on the visual inspection and the calculations). The excess kurtosis is negative at $n = 10$ and $n = 25$, indicating that for this parameter, the distribution is platykurtic for these values of n. However, as $n$ increases, the excess kurtosis becomes positive, indicating that now, the distribution is leptokurtic. The excess kurtosis at $n = 100$ and $n = 1000$ are relatively closer to the true kurtosis of 5 (add three again), but they are not yet close to the true value.\\
+   To briefly comment on the above tasks, it seems that for certain parameters, like mean and standard deviation, increasing sample size for a random sample allows us to get closer to the true parameters. But, for skewness and kurtosis, there is a bit more uncertainty and variation -- to truly see a pattern for these two values, I would have to simulate the task many times, with $n$ varying over a larger range, and a smaller stepsize (to truly observe the exact details and trend). Then, I would be able to comment with a bit more certainty as to how they change with varying $n$.\\
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (c)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,7 +205,142 @@ each other complete the homework in collaboration.
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
   In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
   of moments estimated distribution, (2) the maximum likelihood estimated 
-  distribution, and superimpose the true distribution in both.
+  distribution, and superimpose the true distribution in both.\\
+  \textbf{Solution:} In this question, I am using ggplot2 \citep{ggplot2}, patchwork \citep{patchwork}, and nleqslv \citep{nleqslv}. I also used the Freedman-Diaconis rule \citep{Freedman1981OnTH} to determine the bin width for my histograms; it is conventionally used and is the default for base R. I prefer using this rule. Below are the functions I used to produce my plots!\\
+  <<warning = F>>=
+  library(nleqslv)
+  library(ggplot2)
+  library(patchwork)
+  set.seed(3) #so that the plots do not change between runs
+  gamma.MOM<-function(par, data){
+    
+    #borrowed from Professor Cipolli
+    shape <- par[1]
+    scale <- par[2]
+    
+    EX1 <- scale*shape
+    EX2 <- (scale^2)*(shape * (shape +1))
+    #moments found online.
+    
+    xbar1 <- mean(data)
+    xbar2 <- mean(data^2)
+    
+    c(EX1-xbar1, EX2-xbar2)
+  }
+  
+  gamma.LL<-function(par, data, neg=T){
+    #Also borrowed from Professor Cipolli
+    shape <- par[1]
+    scale <- par[2]
+    
+    ll <- sum(dgamma(x=data, shape = shape, scale = scale, log =T))
+    ifelse(neg, -ll, ll)
+  }
+  
+  find.MOM.MLE = function(n, par){
+    
+    Density = rgamma(n, shape = par[1], scale =par[2])
+    MOM = nleqslv(x = c(1,1),
+                  fn = gamma.MOM, 
+                  data = Density)
+    MLE = optim(par = c(1,1),
+                fn = gamma.LL,
+                data = Density)
+    #finds MOM and MLE for random data
+    
+    #print(c(MOM$x, MLE$par))
+    #print for testing
+    
+    
+    #using Freedman-Diaconis rule which is conventionally used to determine
+    #binwidths for histograms (default for base R)
+  
+    
+    estimated.MOM = rgamma(n, shape = MOM$x[1], scale = MOM$x[2])
+    bw.MOM = 2 * IQR(estimated.MOM, na.rm =T) /
+      length(na.omit(estimated.MOM))^(1/3)
+    
+    true.dist = dgamma(seq(0,10, 0.1), shape = par[1],
+                       scale = par[2])
+    
+    plot_MOM = ggplot() +
+         geom_histogram(aes(x= estimated.MOM,
+                            y= ..density..),
+                        binwidth = bw.MOM,
+                        color = "mediumpurple", fill ="white")+
+         theme_minimal()+ ylab("Density")+xlab("Observations")+
+         geom_hline(yintercept = 0)+
+      geom_line(aes(x= seq(0,10, 0.1),y = true.dist),
+                color ="forestgreen", lwd = 0.7)+
+      ggtitle(paste("Methods of Moments Estimator n =", n, sep = " "))+
+      theme(plot.title = element_text(hjust = 0.5, size = 9))+
+      xlim(c(0,10))+ylim(c(0, max(true.dist)))
+    
+    plot_MOM = plot_MOM +
+      annotate("text", x = 7.5, y = 0.9*max(true.dist),
+               label = paste("Shape =", round(MOM$x[1],3)))+
+      annotate("text", x = 7.5, y = 0.8*max(true.dist),
+               label = paste("Scale =", round(MOM$x[2],3)))
+    
+    estimated.MLE = rgamma(n, shape = MLE$par[1], scale = MLE$par[2])
+    
+    bw.MLE = 2 * IQR(estimated.MLE, na.rm = T) /
+      length(na.omit(estimated.MLE))^(1/3)
+    
+    plot_MLE = ggplot() +
+      geom_histogram(aes(x= estimated.MLE,
+                         y= ..density..),
+                     binwidth = bw.MLE,
+                     color = "mediumpurple", fill ="white")+
+      theme_minimal()+ ylab("Density")+xlab("Observations")+
+      geom_hline(yintercept = 0)+
+      geom_line(aes(x= seq(0,10, 0.1),y = true.dist),
+                color ="forestgreen", lwd = 0.7)+
+      ggtitle(paste("Maximum Likelihood Estimator n =", n, sep=" ")) +
+      theme(plot.title = element_text(hjust = 0.5, size = 9))+
+      xlim(c(0,10)) +ylim(c(0, max(true.dist)))
+    
+    plot_MLE = plot_MLE+
+      annotate("text", x = 7.5, y = 0.9*max(true.dist),
+               label = paste("Shape =", round(MLE$par[1],3)))+
+      annotate("text", x = 7.5, y = 0.8*max(true.dist),
+               label = paste("Scale =", round(MLE$par[2],3)))
+    
+    (plot_MOM + plot_MLE)
+  }
+  
+  @
+  \\
+  \textbf{Note that I will analyze all these plots in detail in the last part of the question!}
+  
+  <<plot1, eval = F>>=
+  find.MOM.MLE(10, c(1,2))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot1>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 1 and a scale of 2. The estimated parameters are shown on the plots.}
+  
+  \label{plot1} 
+  \end{center}
+  \end{figure}
+  
+  <<plot2, eval = F>>=
+  find.MOM.MLE(10, c(3,1))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot2>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 3 and a scale of 1. The estimated parameters are shown on the plots.}
+  \label{plot2} 
+  \end{center}
+  \end{figure}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (d)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,7 +348,35 @@ each other complete the homework in collaboration.
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s). 
   In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
   of moments estimated distribution, (2) the maximum likelihood estimated distribution, 
-  and superimpose the true distribution in both.
+  and superimpose the true distribution in both.\\
+  \textbf{Solution:}\\
+  <<plot3, eval = F>>=
+  find.MOM.MLE(25, c(1,2))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot3>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 1 and a scale of 2. The estimated parameters are shown on the plots.}
+  \label{plot3} 
+  \end{center}
+  \end{figure}
+  
+  <<plot4, eval = F>>=
+  find.MOM.MLE(25, c(3,1))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot4>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 3 and a scale of 1. The estimated parameters are shown on the plots.}
+  \label{plot4} 
+  \end{center}
+  \end{figure}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (e)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -131,7 +384,36 @@ each other complete the homework in collaboration.
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
   In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
   of moments estimated distribution, (2) the maximum likelihood estimated distribution,
-  and superimpose the true distribution in both.
+  and superimpose the true distribution in both.\\
+  \textbf{Solution:}\\
+  <<plot5, eval = F>>=
+  find.MOM.MLE(100, c(1,2))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot5>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 1 and a scale of 2. The estimated parameters are shown on the plots.}
+  \label{plot5} 
+  \end{center}
+  \end{figure}
+  
+  <<plot6, eval = F>>=
+  find.MOM.MLE(100, c(3,1))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot6>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 3 and a scale of 1. The estimated parameters are shown on the plots.}
+  \label{plot6} 
+  \end{center}
+  \end{figure}
+  
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (f)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,11 +421,44 @@ each other complete the homework in collaboration.
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s). 
   In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
   of moments estimated distribution, (2) the maximum likelihood estimated distribution, 
-  and superimpose the true distribution in both.
+  and superimpose the true distribution in both.\\
+  \textbf{Solution:}\\
+  I am assuming you mean $n = 1000$!
+  <<plot7, eval = F>>=
+  find.MOM.MLE(1000, c(1,2))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5.5,3.5)>>=
+  <<plot7>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 1 and a scale of 2. The estimated parameters are shown on the plots.}
+  \label{plot7} 
+  \end{center}
+  \end{figure}
+  
+  <<plot8, eval = F>>=
+  find.MOM.MLE(1000, c(3,1))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5.5,3.5)>>=
+  <<plot8>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 3 and a scale of 1. The estimated parameters are shown on the plots.}
+  \label{plot8} 
+  \end{center}
+  \end{figure}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (g)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \item Comment on the results of parts (c)-(f). 
+  \item Comment on the results of parts (c)-(f).\\
+  \textbf{Solution:}\\
+  For $n = 10$ case, for both Figure \ref{plot1} and Figure \ref{plot2}, we can observe that the estimated parameters for both estimators are different from the true parameters. As a result, by visual inspection, we also observe that the true distribution and the estimated distributions are not close to each other. Interestingly, for $n = 25$, we see a slight improvement in Figure \ref{plot3} and Figure \ref{plot4}, but there is still a significant (not in the statistical sense) mismatch. To elaborate, the estimated parameters are still quite different from the true parameters, especially for Figure \ref{plot3}: for Maximum Likelihood estimator, we see a shape of $1.918$, which is quite different from a true shape parameter of $1$. Similarly, a scale of $0.98$ is definitely far off from a scale of 2. But, the corresponding histogram does not reflect that mismatch; it is somewhat close to the true distribution! This emphasizes my biggest takeaway: do not rely on either quantitative or qualitative analysis alone, but instead use both simultaneously! This idea is especially obvious with normality tests (a Shapiro-Wilk test might have a very small p-value, but the histogram might look very Gaussian!). Now for $n = 100$, Figure \ref{plot5} and \ref{plot6} show that the estimated parameters are getting closer to the true parameters. Similarly, the visuals also indicate that the estimated distribution and true distribution are becoming a better fit (but still not perfect!). Once again, in Figure \ref{plot5}, the scale of $2.374$ is not very close to $2$, but the visuals suggest that the estimated distribution is a good fit with the true distribution. For Figure \ref{plot7} and Figure \ref{plot8}, we see the application of the Weak Law of Large Numbers (WLLG): compared to $n =10$ or $n = 25$, the estimated distributions for $n = 1000$ are a much better fit to the true distribution! The parameters are also quite close to the true parameters. This is because the WLLG says that as our sample size increases, our estimated point estimators from the sample will become arbitrarily closer to the true population parameters. \\
+Note, I would like to mention a few potential sources of bias. Firstly, since the number of bins increase as the sample size increases, we may be seeing a better fit due to an increase in bins. However, in my opinion, using $30$ bins for a sample size of $ n = 10$ might have made visualizing the results difficult, and lead to some other bias! Because of this tradeoff, I think using the additional quantitative assessment of the estimated parameters compared to population parameters is very important to form a holistic conclusion about the plots! I wanted to use Kolmogorov-Smirnov test to check how different the estimated distribution and true distribution is, but the KS test's p-value tells us if the distributions are statistically different ($p \leq 0.05$), but if $p > 0.05$, we cannot draw a conclusion without performing some kind of power analysis to find the Type-II error. Our Type-II error must be less than $0.2$ for us to say that we can safely not reject the null hypothesis. To avoid these issues, I decided to display the estimated parameters instead!\\
+Secondly, all of these plots come from one random run, so any deviation from the true distribution may even be due to random chance! What if I run this code again, and everything fits really well, or does not fit well at all? For this reason, it is important to simulate such tasks an arbitrarily large number of times, and find the average and standard error of those runs! Then, we could assess, while minimizing bias, whether the increase in the quality of fit is truly due to the increase in n.
 \end{enumerate}
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
