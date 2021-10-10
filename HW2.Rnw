@@ -197,7 +197,7 @@ each other complete the homework in collaboration.
 	\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%  Question 2
+%%%%%%%%%  Question 4
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \item Continue with the discrete distribution you selected for Question \ref{Q3}.
@@ -212,7 +212,32 @@ each other complete the homework in collaboration.
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
   two sets of parameter(s). Calculate the sample mean, standard deviation, 
-  skewness, and kurtosis. Interpret the results.
+  skewness, and kurtosis. Interpret the results.\n
+  \textbf{Solution:}
+  <<>>=
+  #The two sets of parameters are -
+  t1 = 40
+  prob1 = 0.5
+  
+  t2 = 20
+  prob2 = 0.25
+  
+  
+  n.10.1 <- rbinom(10, 40, 0.5)
+  n.10.2 <- rbinom(10, 20, 0.25)
+  n.25.1 <- rbinom(25, 40, 0.5)
+  n.25.2 <- rbinom(25, 20, 0.25)
+  n.100.1 <- rbinom(100, 40, 0.5)
+  n.100.2 <- rbinom(100, 20, 0.25)
+  n.1000.1 <- rbinom(1000, 40, 0.5)
+  n.1000.2 <- rbinom(1000, 20, 0.25)
+  
+  stat1 <- data.frame(n.10.1,n.10.2,n.25.1,n.25.2 ,n.100.1,n.100.2,n.1000.1,n.1000.2)
+  apply(stat1, 2, mean)
+  apply(stat1, 2, sd)
+  apply(stat1, 2, skewness)
+  apply(stat1, 2, kurtosis)
+  @
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (c)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -220,7 +245,70 @@ each other complete the homework in collaboration.
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
   In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
   with (1) the method of moments estimated distribution, (2) the maximum likelihood 
-  estimated distribution, and superimpose the true distribution in both.
+  estimated distribution, and superimpose the true distribution in both.\n
+  \textbf{Solution: }
+  <<>>=
+  n.10.1 <- rbinom(10, 40, 0.5)
+  n.10.2 <- rbinom(10, 20, 0.25)
+  
+  binom.mom <- function(par, data){
+    n <- par[1]
+    p <- par[2]
+    #Here, k = 2 since estimator is highly variable at k>2
+    #First two population moments
+    EX1 <- n*p
+    EX2 <- n*p*(1-p + n*p)
+    eq1 <- EX1 - mean(data) #sample moment 1
+    eq2 <- EX2 - mean(data^2) #sample moment 2
+    c(eq1, eq2)
+    #print(c(EX1, EX2, mean(data), mean(data^2), eq1, eq2))
+    
+  }
+  
+  binom.MLE <- function(par, data, neg = T){
+    n <- par[1]
+    p <- par[2]
+    
+    MLE <- sum(dbinom(x = data, size = n, prob = p, log=TRUE))
+    ifelse(!neg,MLE,-MLE)
+  }
+  
+  library(nleqslv)
+  
+  find.binom.mom.mle <-function(n, par){
+  Sample = rbinom(n, size = par[1], prob =par[2])
+  moms<-nleqslv(x = c(par[1], par[2]),
+  fn = binom.mom,
+  data=Sample)
+  mles <- optim(fn = binom.MLE,
+                par = par[1],
+                neg = TRUE,
+                method = "Brent",
+                lower = 0,
+                upper = n,
+                data = Sample)
+   print(c(moms))
+   
+    plot_mom = ggplot() +
+      geom_histogram(aes(x = rbinom(n, size = moms$x[1], prob = moms$x[2]),
+                         y = ..density..
+                          ), binwidth = 1, color = "green", fill ="grey") +
+      geom_hline(yintercept = 0) +
+      theme_bw() + 
+    geom_linerange( aes(x=0:40, ymin=0, ymax=dbinom(0:40, size = par[1],
+                                               prob = par[2])))
+              
+        plot_mle = ggplot() +
+      geom_histogram(aes(x = rbinom(n, size = par[1], prob = par[2]),
+                         y = ..density..), , color = "green", fill ="grey",
+                     binwidth = 1) +
+      geom_hline(yintercept = 0) +
+      theme_bw() + geom_linerange( aes(x=0:40, ymin=0, ymax=dbinom(0:40, size = par[1],
+                                               prob = par[2])))
+      
+        plot_mom
+  }
+  @
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (d)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
