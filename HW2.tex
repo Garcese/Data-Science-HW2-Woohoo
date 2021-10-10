@@ -368,6 +368,8 @@ each other complete the homework in collaboration.
   estimated distribution, and superimpose the true distribution in both.\\
    \textbf{Solution: }
    The functions that are used for parts c through f are listed below.
+   The moments for the binomial distribution were obtained via \citep{binomial2002},
+   and
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -381,7 +383,7 @@ each other complete the homework in collaboration.
   \hlcom{#Here, k = 2 since estimator is highly variable at k>2}
   \hlcom{#First two population moments}
   \hlstd{EX1} \hlkwb{<-} \hlstd{n}\hlopt{*}\hlstd{p}
-  \hlstd{EX2} \hlkwb{<-} \hlstd{n}\hlopt{*}\hlstd{p}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p} \hlopt{+} \hlstd{n}\hlopt{*}\hlstd{p)} \hlcom{#moments found online cite}
+  \hlstd{EX2} \hlkwb{<-} \hlstd{n}\hlopt{*}\hlstd{p}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p} \hlopt{+} \hlstd{n}\hlopt{*}\hlstd{p)} \hlcom{#moments found in notes}
   \hlstd{eq1} \hlkwb{<-} \hlstd{EX1} \hlopt{-} \hlkwd{mean}\hlstd{(data)} \hlcom{#sample moment 1}
   \hlstd{eq2} \hlkwb{<-} \hlstd{EX2} \hlopt{-} \hlkwd{mean}\hlstd{(data}\hlopt{^}\hlnum{2}\hlstd{)} \hlcom{#sample moment 2}
   \hlkwd{c}\hlstd{(eq1, eq2)}
@@ -411,6 +413,7 @@ each other complete the homework in collaboration.
               \hlkwc{par} \hlstd{=} \hlkwd{c}\hlstd{(par[}\hlnum{1}\hlstd{], par[}\hlnum{2}\hlstd{]),}
               \hlkwc{data} \hlstd{= Sample)}
 \hlcom{#mles optimizes the MLE for the given parameters}
+\hlcom{#plotting MOM graph}
   \hlstd{plot_mom} \hlkwb{=} \hlkwd{ggplot}\hlstd{()} \hlopt{+}
     \hlkwd{geom_histogram}\hlstd{(}\hlkwd{aes}\hlstd{(}\hlkwc{x} \hlstd{= Sample,}
                        \hlkwc{y} \hlstd{= ..density..),}
@@ -437,7 +440,7 @@ each other complete the homework in collaboration.
           \hlkwc{axis.title.x} \hlstd{=} \hlkwd{element_text}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{20}\hlstd{),}
           \hlkwc{axis.title.y} \hlstd{=} \hlkwd{element_text}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{20}\hlstd{))}
 
-
+\hlcom{#plotting MLE graph}
   \hlstd{plot_mle} \hlkwb{=} \hlkwd{ggplot}\hlstd{()} \hlopt{+}
     \hlkwd{geom_histogram}\hlstd{(}\hlkwd{aes}\hlstd{(}\hlkwc{x} \hlstd{= Sample,}
                        \hlkwc{y} \hlstd{= ..density..),}
