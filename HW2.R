@@ -1,6 +1,6 @@
 x = seq(0, 25, length.out = 1000)
 plot(x, dgamma(x, shape = 5.4489, scale = 1.077325))
-#messing around -- this shape and scale produces a gamma similar to normal distribution :)
+#messing around -- this shape and scale is similar to normal distribution :)
 #Very cool
 
 
@@ -34,6 +34,9 @@ kurtosis(n_25)
 kurtosis(n_100)
 kurtosis(n_1000)
 
+library(nleqslv)
+library(ggplot2)
+library(patchwork)
 gamma.MOM<-function(par, data){
   #borrowed from Professor Cipolli
   shape <- par[1]
@@ -74,34 +77,45 @@ find.MOM.MLE = function(n, par){
   bw = 2 * IQR(Density) / length(Density)^(1/3)
   #using Freedman-Diaconis rule which is found to be robust for histograms
   #reminder to self: cite
-  
+  estimated.MOM = rgamma(n, shape = MOM$x[1], scale = MOM$x[2])
   plot_MOM = ggplot() +
-       geom_histogram(aes(x= rgamma(n, shape = MOM$x[1], scale = MOM$x[2]),
+       geom_histogram(aes(x= estimated.MOM,
                           y= stat(count)/sum(count)),
                       binwidth = bw,
                       color = "mediumpurple", fill ="white")+
        theme_minimal()+ ylab("Relative Frequency")+xlab("Observations")+
        geom_hline(yintercept = 0)+
-    geom_line(aes(x= seq(0,20, 0.1),y = dgamma(seq(0,20, 0.1), shape = par[1],
+    geom_line(aes(x= seq(0,10, 0.1),y = dgamma(seq(0,10, 0.1), shape = par[1],
                                                scale = par[2])*bw),
               color ="forestgreen", lwd = 0.7)+
     ggtitle(paste("Methods of Moments Estimator n =", n, sep = " "))+
-    theme(plot.title = element_text(hjust = 0.5, size = 9))
+    theme(plot.title = element_text(hjust = 0.5, size = 9))+
+    xlim(c(0,10))+ylim(c(0, 0.20))
   #Note that I am plotting relative frequency. I converted density to 
   #Relative Frequency by multiplying with bin width.
+  ks.MOM = ks.test(estimated.MOM, Density, alternative = "two.sided")
+  plot.MOM = plot_MOM +
+    annotate("text", x = 8, y = 0.18, label = paste("p =", round(ks.MOM[[2]],3)))
   
+  estimated.MLE = rgamma(n, shape = MLE$par[1], scale = MLE$par[2])
   plot_MLE = ggplot() +
-    geom_histogram(aes(x= rgamma(n, shape = MLE$par[1], scale = MLE$par[2]),
+    geom_histogram(aes(x= estimated.MLE,
                        y= stat(count)/sum(count)),
                    binwidth = bw,
                    color = "mediumpurple", fill ="white")+
     theme_minimal()+ ylab("Relative Frequency")+xlab("Observations")+
     geom_hline(yintercept = 0)+
-    geom_line(aes(x= seq(0,20, 0.1),y = dgamma(seq(0,20, 0.1), shape = par[1],
+    geom_line(aes(x= seq(0,10, 0.1),y = dgamma(seq(0,10, 0.1), shape = par[1],
                                                scale = par[2])*bw),
               color ="forestgreen", lwd = 0.7)+
     ggtitle(paste("Maximum Likelihood Estimator n =", n, sep=" ")) +
-    theme(plot.title = element_text(hjust = 0.5, size = 9))
+    theme(plot.title = element_text(hjust = 0.5, size = 9))+
+    xlim(c(0,10)) +ylim(c(0, 0.20))
+  
+  ks.MLE = ks.test(estimated.MLE, Density, alternative = "two.sided")
+  
+  plot_MLE = plot_MLE+
+    annotate("text", x = 8, y = 0.18, label = paste("p = ", round(ks.MLE[[2]], 3)))
   
   (plot_MOM + plot_MLE)
 }
