@@ -322,20 +322,243 @@ options(warn=0) #Re-enable warnings
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Provide the mean, standard deviation, skewness, and kurtosis of the PDF.
   Ensure to interpret each.
+  \textbf{Solution: I want to thank Giancarlo for his help with this!}\\
+  I used the moments from Wikipedia. Note that $shape = k$ and $scale = \theta$. $location = \epsilon$, which determines the lower bound for the distribution. We assume $\epsilon = 0$.
+The moments are:\\
+\begin{align} \large
+    Mean &= \epsilon + \theta \cdot k\\
+    Standard\;Deviation &= \theta \cdot \sqrt{k}\\
+    Skewness &= \frac{2}{\sqrt{k}}\\
+    Kurtosis &= 3 + \frac{6}{k}
+\end{align} \\
+\indent  For our parameter sets, which are shape = 1, scale = 2 (rate = 0.5), shape = 3, scale = 1 (rate = 1), the values are calculated in Figure \ref{fig:matrix} below. (Note: We take the location parameter, $\epsilon$, to be 0 for both):\\
+\begin{figure}[h]
+$$
+\Large
+    \begin{bmatrix}
+        Parameters \; (k, \theta) & Mean & Standard\;Deviation & Skewness & Kurtosis\\
+        (1, 2) & 2 & 2 & 2 & 9 \\
+        (3, 1) & 3 & \sqrt{3} & \frac{2\sqrt{3}}{3} & 5
+    \end{bmatrix}
+$$
+\caption{Mean, Standard deviation, Skewness, and Kurtosis for our parameter sets.}
+\label{fig:matrix}
+\end{figure} \\
+\\
+\\
+  \textbf{Interpretation:}\\
+  The mean for the Gamma distribution, calculated using the formula above, informs us about the central tendency of the distribution, depending on shape and scale. Because the gamma distribution is right-skewed for both sets of parameters that we are using, I would consider the median to be a more accurate measure of the central tendency. The standard deviation, calculated by $\sqrt{variance}$, tells us about the variability in the gamma distribution about the center. The skewness refers to the symmetry of the distribution -- a high skewness corresponds to a less symmetric distribution. In the case of our parameters, I would expect to see a positive value for skewness because the distributions are right skewed, and have a long tail pointing towards the right (which is true based on our calculation). As for kurtosis, this measure refers to the peak of the distribution. A distribution is leptokurtic, if it has a tall peak and a kurtosis greater than 3 (so excess kurtosis is positive), whereas a distribution is platykurtic if the peak is flat, and the kurtosis is less than 3 (excess kurtosis is negative). Since our calculations show that kurtosis is greater than 3, our distributions will be leptokurtic.  
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (b)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
   two sets of parameter(s). Calculate the sample mean, standard deviation, 
-  skewness, and kurtosis. Interpret the results.
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  skewness, and kurtosis. Interpret the results.\\
+  \textbf{Solution:}\\
+  I used e1071 in this code \citep{e1071}. Note that the kurtosis() function here provides excess kurtosis, which is found by subtracting 3 from the kurtosis.\\
+  <<warning = F>>=
+  library(e1071)
+
+  set.seed(1) #set seed to ensure re-testing
+  
+  n_10 = rgamma(10, shape = 1, scale =2)
+  n_25 = rgamma(25, shape = 1, scale =2)
+  n_100 = rgamma(100, shape =1, scale =2)
+  n_1000 = rgamma(1000, shape =1, scale =2)
+  #making random samples
+  
+  mean(n_10)
+  mean(n_25)
+  mean(n_100)
+  mean(n_1000)
+  
+  sd(n_10)
+  sd(n_25)
+  sd(n_100)
+  sd(n_1000)
+  
+  skewness(n_10)
+  skewness(n_25)
+  skewness(n_100)
+  skewness(n_1000)
+  
+  kurtosis(n_10)
+  kurtosis(n_25)
+  kurtosis(n_100)
+  kurtosis(n_1000)
+  
+  
+  n_10 = rgamma(10, shape = 3, scale =1)
+  n_25 = rgamma(25, shape = 3, scale =1)
+  n_100 = rgamma(100, shape =3, scale =1)
+  n_1000 = rgamma(1000, shape =3, scale =1)
+  
+  mean(n_10)
+  mean(n_25)
+  mean(n_100)
+  mean(n_1000)
+  
+  sd(n_10)
+  sd(n_25)
+  sd(n_100)
+  sd(n_1000)
+  
+  skewness(n_10)
+  skewness(n_25)
+  skewness(n_100)
+  skewness(n_1000)
+  
+  kurtosis(n_10)
+  kurtosis(n_25)
+  kurtosis(n_100)
+  kurtosis(n_1000)
+  @
+  \textbf{Interpretation:} \\
+  For the mean of the first parameter set (shape = $1$, scale = $2$), we see that the mean and the standard deviation get closer to the true mean and standard deviation of $2$ as $n$ increases to a $1000$. For the skewness, the value is very low at $n = 10$, and it gets closest to the true skewness at $n = 25$, but then slightly deviates from the true value. The skewness here is positive, which indicates that the distribution is right-skewed (which I had expected based on the visual inspection). The excess kurtosis is negative at $n = 10$, indicating that for this parameter, the distribution is platykurtic. However, as $n$ increases, the excess kurtosis becomes positive, indicating that now, the distribution is leptokurtic. The excess kurtosis at $n = 25$ is closest to the true kurtosis of 9 (note, I added 3 to translate between the two), but then as $n$ increases, the kurtosis deviates and then comes closer to the true value, similar to what we saw for skewness.\\
+   For the mean of the second parameter set (shape = $3$, scale = $1$), we see that the mean and the standard deviation get closer to the true mean of $3$ as $n$ approaches $1000$ and standard deviation of $\sqrt{3} \approx 1.73$ at $n =100$. At $n =1000$, the standard deviation moves slightly away from the true value. For the skewness, the value is low for $n = 10$ and $n = 25$, but gets closest to the true skewness of $\frac{2\sqrt{3}}{3} \approx 1.15$ at $n = 100$, but then slightly deviates from the true value (similar to standard deviation). The skewness here is positive, which indicates that the distribution is right-skewed (which I had expected based on the visual inspection and the calculations). The excess kurtosis is negative at $n = 10$ and $n = 25$, indicating that for this parameter, the distribution is platykurtic for these values of n. However, as $n$ increases, the excess kurtosis becomes positive, indicating that now, the distribution is leptokurtic. The excess kurtosis at $n = 100$ and $n = 1000$ are relatively closer to the true kurtosis of 5 (add three again), but they are not yet close to the true value.\\
+   To briefly comment on the above tasks, it seems that for certain parameters, like mean and standard deviation, increasing sample size for a random sample allows us to get closer to the true parameters. But, for skewness and kurtosis, there is a bit more uncertainty and variation -- to truly see a pattern for these two values, I would have to simulate the task many times, with $n$ varying over a larger range, and a smaller stepsize (to truly observe the exact details and trend). Then, I would be able to comment with a bit more certainty as to how they change with varying $n$.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (c)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Generate a random sample of size $n=10$ for your two sets of parameter(s).
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
   In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
   of moments estimated distribution, (2) the maximum likelihood estimated 
-  distribution, and superimpose the true distribution in both.
+  distribution, and superimpose the true distribution in both.\\
+  \textbf{Solution:} In this question, I am using ggplot2 \citep{ggplot2}, patchwork \citep{patchwork}, and nleqslv \citep{nleqslv}. I also used the Freedman-Diaconis rule \citep{Freedman1981OnTH} to determine the bin width for my histograms; it is conventionally used and is the default for base R. I prefer using this rule. Below are the functions I used to produce my plots!\\
+  <<warning = F>>=
+  library(nleqslv)
+  library(ggplot2)
+  library(patchwork)
+  set.seed(3) #so that the plots do not change between runs
+  gamma.MOM<-function(par, data){
+    
+    #borrowed from Professor Cipolli
+    shape <- par[1]
+    scale <- par[2]
+    
+    EX1 <- scale*shape
+    EX2 <- (scale^2)*(shape * (shape +1))
+    #moments found online.
+    
+    xbar1 <- mean(data)
+    xbar2 <- mean(data^2)
+    
+    c(EX1-xbar1, EX2-xbar2)
+  }
+  
+  gamma.LL<-function(par, data, neg=T){
+    #Also borrowed from Professor Cipolli
+    shape <- par[1]
+    scale <- par[2]
+    
+    ll <- sum(dgamma(x=data, shape = shape, scale = scale, log =T))
+    ifelse(neg, -ll, ll)
+  }
+  
+  find.MOM.MLE = function(n, par){
+    
+    Density = rgamma(n, shape = par[1], scale =par[2])
+    MOM = nleqslv(x = c(1,1),
+                  fn = gamma.MOM, 
+                  data = Density)
+    MLE = optim(par = c(1,1),
+                fn = gamma.LL,
+                data = Density)
+    #finds MOM and MLE for random data
+    
+    #print(c(MOM$x, MLE$par))
+    #print for testing
+    
+    
+    #using Freedman-Diaconis rule which is conventionally used to determine
+    #binwidths for histograms (default for base R)
+  
+    
+    estimated.MOM = rgamma(n, shape = MOM$x[1], scale = MOM$x[2])
+    bw.MOM = 2 * IQR(estimated.MOM, na.rm =T) /
+      length(na.omit(estimated.MOM))^(1/3)
+    
+    true.dist = dgamma(seq(0,10, 0.1), shape = par[1],
+                       scale = par[2])
+    
+    plot_MOM = ggplot() +
+         geom_histogram(aes(x= estimated.MOM,
+                            y= ..density..),
+                        binwidth = bw.MOM,
+                        color = "mediumpurple", fill ="white")+
+         theme_minimal()+ ylab("Density")+xlab("Observations")+
+         geom_hline(yintercept = 0)+
+      geom_line(aes(x= seq(0,10, 0.1),y = true.dist),
+                color ="forestgreen", lwd = 0.7)+
+      ggtitle(paste("Methods of Moments Estimator n =", n, sep = " "))+
+      theme(plot.title = element_text(hjust = 0.5, size = 9))+
+      xlim(c(0,10))+ylim(c(0, max(true.dist)))
+    
+    plot_MOM = plot_MOM +
+      annotate("text", x = 7.5, y = 0.9*max(true.dist),
+               label = paste("Shape =", round(MOM$x[1],3)))+
+      annotate("text", x = 7.5, y = 0.8*max(true.dist),
+               label = paste("Scale =", round(MOM$x[2],3)))
+    
+    estimated.MLE = rgamma(n, shape = MLE$par[1], scale = MLE$par[2])
+    
+    bw.MLE = 2 * IQR(estimated.MLE, na.rm = T) /
+      length(na.omit(estimated.MLE))^(1/3)
+    
+    plot_MLE = ggplot() +
+      geom_histogram(aes(x= estimated.MLE,
+                         y= ..density..),
+                     binwidth = bw.MLE,
+                     color = "mediumpurple", fill ="white")+
+      theme_minimal()+ ylab("Density")+xlab("Observations")+
+      geom_hline(yintercept = 0)+
+      geom_line(aes(x= seq(0,10, 0.1),y = true.dist),
+                color ="forestgreen", lwd = 0.7)+
+      ggtitle(paste("Maximum Likelihood Estimator n =", n, sep=" ")) +
+      theme(plot.title = element_text(hjust = 0.5, size = 9))+
+      xlim(c(0,10)) +ylim(c(0, max(true.dist)))
+    
+    plot_MLE = plot_MLE+
+      annotate("text", x = 7.5, y = 0.9*max(true.dist),
+               label = paste("Shape =", round(MLE$par[1],3)))+
+      annotate("text", x = 7.5, y = 0.8*max(true.dist),
+               label = paste("Scale =", round(MLE$par[2],3)))
+    
+    (plot_MOM + plot_MLE)
+  }
+  
+  @
+  \textbf{Note that I will analyze all these plots in detail in the last part of the question!}
+  
+  <<plot1, eval = F>>=
+  find.MOM.MLE(10, c(1,2))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot1>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 1 and a scale of 2. The estimated parameters are shown on the plots.}
+  
+  \label{plot1} 
+  \end{center}
+  \end{figure}
+  
+  <<plot2, eval = F>>=
+  find.MOM.MLE(10, c(3,1))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot2>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 3 and a scale of 1. The estimated parameters are shown on the plots.}
+  \label{plot2} 
+  \end{center}
+  \end{figure}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (d)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -343,7 +566,35 @@ options(warn=0) #Re-enable warnings
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s). 
   In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
   of moments estimated distribution, (2) the maximum likelihood estimated distribution, 
-  and superimpose the true distribution in both.
+  and superimpose the true distribution in both.\\
+  \textbf{Solution:}\\
+  <<plot3, eval = F>>=
+  find.MOM.MLE(25, c(1,2))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot3>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 1 and a scale of 2. The estimated parameters are shown on the plots.}
+  \label{plot3} 
+  \end{center}
+  \end{figure}
+  
+  <<plot4, eval = F>>=
+  find.MOM.MLE(25, c(3,1))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot4>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 3 and a scale of 1. The estimated parameters are shown on the plots.}
+  \label{plot4} 
+  \end{center}
+  \end{figure}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (e)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -351,7 +602,36 @@ options(warn=0) #Re-enable warnings
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
   In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
   of moments estimated distribution, (2) the maximum likelihood estimated distribution,
-  and superimpose the true distribution in both.
+  and superimpose the true distribution in both.\\
+  \textbf{Solution:}\\
+  <<plot5, eval = F>>=
+  find.MOM.MLE(100, c(1,2))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot5>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 1 and a scale of 2. The estimated parameters are shown on the plots.}
+  \label{plot5} 
+  \end{center}
+  \end{figure}
+  
+  <<plot6, eval = F>>=
+  find.MOM.MLE(100, c(3,1))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5,3.5)>>=
+  <<plot6>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 3 and a scale of 1. The estimated parameters are shown on the plots.}
+  \label{plot6} 
+  \end{center}
+  \end{figure}
+  
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (f)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -359,11 +639,45 @@ options(warn=0) #Re-enable warnings
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s). 
   In a $1 \times 2$ grid, plot a histogram of each set of data with (1) the method 
   of moments estimated distribution, (2) the maximum likelihood estimated distribution, 
-  and superimpose the true distribution in both.
+  and superimpose the true distribution in both.\\
+  \textbf{Solution:}\\
+  I am assuming you mean $n = 1000$!
+  <<plot7, eval = F>>=
+  find.MOM.MLE(1000, c(1,2))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5.5,3.5)>>=
+  <<plot7>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 1 and a scale of 2. The estimated parameters are shown on the plots.}
+  \label{plot7} 
+  \end{center}
+  \end{figure}
+  
+  <<plot8, eval = F>>=
+  find.MOM.MLE(1000, c(3,1))
+  @
+  \begin{figure}[H]
+  \begin{center}
+  <<echo=FALSE,warning=FALSE,message=FALSE,fig.dim=c(5.5,3.5)>>=
+  <<plot8>>
+  @
+  
+  \caption{Density histograms using Methods of Moments and Maximum Likelihood Estimator for the Gamma Distribution. The true distribution is superimposed with a forest green color, with a shape of 3 and a scale of 1. The estimated parameters are shown on the plots.}
+  \label{plot8} 
+  \end{center}
+  \end{figure}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (g)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \item Comment on the results of parts (c)-(f). 
+  \item Comment on the results of parts (c)-(f).\\
+  \textbf{Solution:}\\
+  For $n = 10$ case, for both Figure \ref{plot1} and Figure \ref{plot2}, we can observe that the estimated parameters for both estimators are different from the true parameters. As a result, by visual inspection, we also observe that the true distribution and the estimated distributions are not close to each other. Interestingly, for $n = 25$, we see a slight improvement in Figure \ref{plot3} and Figure \ref{plot4}, but there is still a significant (not in the statistical sense) mismatch. To elaborate, the estimated parameters are still quite different from the true parameters, especially for Figure \ref{plot3}: for Maximum Likelihood estimator, we see a shape of $1.918$, which is quite different from a true shape parameter of $1$. Similarly, a scale of $0.98$ is definitely far off from a scale of 2. But, the corresponding histogram does not reflect that mismatch; it is somewhat close to the true distribution! This emphasizes my biggest takeaway: do not rely on either quantitative or qualitative analysis alone, but instead use both simultaneously! This idea is especially obvious with normality tests (a Shapiro-Wilk test might have a very small p-value, but the histogram might look very Gaussian!). Now for $n = 100$, Figure \ref{plot5} and \ref{plot6} show that the estimated parameters are getting closer to the true parameters. Similarly, the visuals also indicate that the estimated distribution and true distribution are becoming a better fit (but still not perfect!). Once again, in Figure \ref{plot5}, the scale of $2.374$ is not very close to $2$, but the visuals suggest that the estimated distribution is a good fit with the true distribution. For Figure \ref{plot7} and Figure \ref{plot8}, we see the application of the Weak Law of Large Numbers (WLLG): compared to $n =10$ or $n = 25$, the estimated distributions for $n = 1000$ are a much better fit to the true distribution! The parameters are also quite close to the true parameters. This is because the WLLG says that as our sample size increases, our estimated point estimators from the sample will become arbitrarily closer to the true population parameters. \\
+Note, I would like to mention a few potential sources of bias. Firstly, since the number of bins increase as the sample size increases, we may be seeing a better fit due to an increase in bins. However, in my opinion, using $30$ bins for a sample size of $ n = 10$ might have made visualizing the results difficult, and lead to some other bias! Because of this tradeoff, I think using the additional quantitative assessment of the estimated parameters compared to population parameters is very important to form a holistic conclusion about the plots! I wanted to use Kolmogorov-Smirnov test to check how different the estimated distribution and true distribution is, but the KS test's p-value tells us if the distributions are statistically different ($p \leq 0.05$), but if $p > 0.05$, we cannot draw a conclusion without performing some kind of power analysis to find the Type-II error. Our Type-II error must be less than $0.2$ for us to say that we can safely not reject the null hypothesis. To avoid these issues, I decided to display the estimated parameters instead!\\
+Secondly, all of these plots come from one random run, so any deviation from the true distribution may even be due to random chance! What if I run this code again, and everything fits really well, or does not fit well at all? For this reason, it is important to simulate such tasks an arbitrarily large number of times, and find the average and standard error of those runs! Then, we could assess, while minimizing bias, whether the increase in the quality of fit is truly due to the increase in n.
+  
 \end{enumerate}
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -382,38 +696,748 @@ options(warn=0) #Re-enable warnings
   your distribution. Be sure to include a discussion about the support and ensure
   to provide the mass function, and CDF. This requires some internet research -- 
   what's the history of the distribution, why was it created and named? What are
-  some exciting applications of this distribution? Cite all of your sources.
+  some exciting applications of this distribution? Cite all of your sources.\\
+  \textbf{Solution:}
+  
+  Let us consider the binomial distribution. The binomial distribution is a discrete distribution that models the number of successes of $n$ Bernoulli trials. It is used to model any experiment of the sort when we can denote one outcome as "success" or "outcome of interest", provided that this outcome has a set probability of happening. Examples of experiments that can be modeled using the binomial distribution include, flipping a coin (pick heads or tails to be our success), drawing a card from a standard deck (consider some card a success), etc. \citep{philippou2011binomial}, \citep{wiki:Binomial_distribution}\\
+  
+  Consider that we perform an experiment a total number of $n$ times. We can have $0$ successes or $n$ successes, as well as everything in between. So, the support of the distribution goes from $0$ to $n$, and has $n+1$ elements. Here are the PMF and the CDF for the distribution. \citep{philippou2011binomial}
+  
+  
+  PMF:
+  $$f(x) = P(X=x) = \binom{n}{x} p^x q^{n-x}, x= \{0,1,2, \cdots, n\}$$
+  CDF:
+  $$F(x) = P(X \leq x) = \sum_{i=0}^{x} \binom{n}{i} p^i q^{n-i}$$
+  
+The distribution was derived by Jacob Bernoulli, with special cases being derived by Blaise Pascal. The name of the distribution comes from the binomial theorem.
+\citep{philippou2011binomial}, \citep{wiki:Binomial_distribution}
+
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (b)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\item Show that you have a valid PMF. You can show this approximately by 
 	calculating the series in a repeat loop until probability mass evaluations are 
-	infinitesimally small.
+	infinitesimally small.\\
+	\textbf{Solution:}
+<<>>=
+# Specifying two sets of parameters:
+
+# SET 1 (trials = 40, probability = 0.5)
+t1 <- 40
+prob1 <- 0.5
+
+# SET 2 (trials = 20, probability = 0.25)
+t2 <- 20
+prob2 <- 0.25
+
+@
+
+We show the validity of a PMF by 
+1 - adding up all the individual probabilities and checking to see if they add up to zero.
+2 - checking to see if all the probabilities are nonnegative
+
+<<>>=
+# Let's check this for the first set:
+
+x <- 0                     # first possible number of successes is zero
+v <- NULL                  # creating a null vector to append the probabilities to
+repeat{
+  a <- dbinom(x,t1,prob1)  # dbinom function takes value and returns probability
+  v <- append (v,a)        # adding an element to v with each loop
+  x <- x + 1               # considering the next possible number of successes
+  if(sum(v)>=0.999999999){ # mimicking "infinitesimally small"
+    break
+  }
+}
+print(sum(v))              # sum of all the probabilities should equal 1
+v >= 0                     # the probabilities should be nonnegative
+
+
+# Now let's check it for the second set:
+
+x <- 0                     # first possible nr. of success is zero
+v <- NULL                  # creating a null vector to append the probabilities to
+repeat{
+  a <- dbinom(x,t2,prob2)  # dbinom function takes value and returns probability
+  v <- append (v,a)        # adding an element to v with each loop
+  x <- x + 1               # considering the next possible number of successes
+  if(sum(v)>=0.999999999){ # mimicking "infinitesimally small"
+    break
+  }
+}
+print(sum(v))              # sum of all the probabilities should equal 1
+v >= 0                     # the probabilities should be nonnegative
+
+@
+  \hfill $\Box$ 
+  \vskip 5pt
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (c)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\item Find the median for your two sets of parameter(s). Conduct some research 
 	to find the median based on our PMF to confirm that your numerical approach is
-	correct. 
+	correct.\\
+	\textbf{Solution:}
+<<>>=
+
+# Median for the first set (median = 50th percentile)
+qbinom(0.5, t1, prob1)
+
+# Median for the second set (median = 50th percentile)
+qbinom(0.5, t2, prob2)
+
+@
+
+Theoretically, if np is an integer, then the median equals mp, which supports our results. \citep{wiki:Binomial_distribution}
+  \hfill $\Box$ 
+  \vskip 5pt
+	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (d)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\item \label{q3PMF} Graph the PMF for several values of the parameter(s) 
 	including the two sets you specified. What does changing the parameter(s) do 
-	to the shape of the PMF?
+	to the shape of the PMF?\\
+	\textbf{Solution:}
+<<>>=
+
+# Graphing the PMF for the first set
+x1 <- 0:t1   # for any number of trials t, there are t+1 possible successes.
+p1 <- dbinom(x1,t1,prob1) # dbinom function takes value and returns probability
+
+pmf1 <- qplot(x1,                # telling R to plot x
+              weight = p1,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t1+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = "PMF, first set of parameters",
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Graphing the PMF for the second set
+x2 <- 0:t2   # for any number of trials t, there are t+1 possible successes.
+p2 <- dbinom(x2,t2,prob2) # dbinom function takes value and returns probability
+
+pmf2 <- qplot(x2,                # telling R to plot x
+              weight = p2,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t2+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = "PMF, second set of parameters",
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Displaying the graphs
+
+pmf1+pmf2 +plot_layout(ncol=1)
+
+
+# Let's keep the number of trials t constant to evaluate how different p's change the PMF.
+
+# a) Parameters: t=20, prob=0.15
+t3 <- 20
+prob3 <- 0.15
+
+x3 <- 0:t3  # for any number of trials t, there are t+1 possible successes
+p3 <- dbinom(x3,t3,prob3) # dbinom function takes value and returns probability
+
+pmf3 <- qplot(x3,                # telling R to plot x
+              weight = p3,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t3+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t3, "| probability = ", prob3),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# b) Parameters: t = 20, prob=0.35
+t4 <- 20
+prob4 <- 0.35
+
+x4 <- 0:t4  # for any number of trials t, there are t+1 possible successes
+p4 <- dbinom(x4,t4,prob4) # dbinom function takes value and returns probability
+
+pmf4 <- qplot(x4,                # telling R to plot x
+              weight = p4,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t4+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t4, "| probability = ", prob4),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# c) Parameters: t=20, prob=0.65
+t5 <- 20
+prob5 <- 0.65
+
+x5 <- 0:t5  # for any number of trials t there are t+1 possible successes
+p5 <- dbinom(x5,t5,prob5) # dbinom function takes value and returns probability
+
+pmf5 <- qplot(x5,                # telling R to plot x
+              weight = p5,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t5+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t5, "| probability = ", prob5),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# d) Parameters: t=20, prob=0.85
+t6 <- 20
+prob6 <-0.85
+
+x6 <- 0:t6  # for any number of trials t, there are t+1 possible successes
+p6 <- dbinom(x6,t6,prob6) # dbinom function takes value and returns probability
+
+pmf6 <- qplot(x6,                # telling R to plot x
+              weight = p6,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t6+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t6, "| probability = ", prob6),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Displaying the graphs:
+(pmf3+pmf4)/(pmf5+pmf6)
+
+@
+
+We notice that, as p gets larger, the distribution shifts more and more to the right.\\
+
+<<>>=
+# Now, let's keep p constant to evaluate how different t's change the PMF.
+
+# a) Parameters: t=5, prob=0.35
+t7 <- 5
+prob7 <- 0.35
+
+x7 <- 0:t7  # for any number of trials t, there are t+1 possible successes
+p7 <- dbinom(x7,t7,prob7) # dbinom function takes value and returns probability
+
+pmf7 <- qplot(x7,                # telling R to plot x
+              weight = p7,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t7+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t7, "| probability = ", prob7),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# b) Parameters: t=10, prob=0.35
+t8 <- 10
+prob8 <- 0.35
+
+x8 <- 0:t8  # for any number of trials t, there are t+1 possible successes
+p8 <- dbinom(x8,t8,prob8) # dbinom function takes value and returns probability
+
+pmf8 <- qplot(x8,                # telling R to plot x
+              weight = p8,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t8+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t8, "| probability = ", prob8),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# c) Parameters: t=25, prob=0.35
+t9 <- 25
+prob9 <- 0.35
+
+x9 <- 0:t9  # for any number of trials t, there are t+1 possible successes
+p9 <- dbinom(x9,t9,prob9) # dbinom function takes value and returns probability
+
+pmf9 <- qplot(x9,                # telling R to plot x
+              weight = p9,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t9+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t9, "| probability = ", prob9),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# d) Parameters: t=50, prob=0.35
+t10 <- 50
+prob10 <- 0.35
+
+x10 <- 0:t10  # for any number of trials t, there are t+1 possible successes
+p10 <- dbinom(x10,t10,prob10) # dbinom function takes value and returns probability
+
+pmf10 <- qplot(x10,                # telling R to plot x
+              weight = p10,        # weighted by the probabilities p
+              geom="histogram",    # telling R we want a histogram
+              bins=t10+1,          # we have t+1 possible successes
+              col=I("black"),      # histogram border color
+              main = paste("trials = ",t10, "| probability = ", prob10),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# Displaying the graphs
+(pmf7+pmf8)/(pmf9+pmf10)
+
+@
+
+We observe that increasing the number of trials does not change the shape of the distribution, but it does increase the number of bins.
+  \hfill $\Box$ 
+  \vskip 5pt
+
+	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (e)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	 \item Graph the CDF for the same values of the parameter(s) as you did in 
 	 Question \ref{q3PMF}. What does changing the parameter(s) do to the shape of 
-	 the CDF? Comment on the aspects of the CDFs that show that the CDF is valid.
+	 the CDF? Comment on the aspects of the CDFs that show that the CDF is valid.\\
+	 \textbf{Solution:}
+<<>>=
+
+# Graphing the CDF for the first set
+x1 <- 0:t1   # for any number of trials t, there are t+1 possible successes
+p1 <- dbinom(x1,t1,prob1) # dbinom function takes value and returns probability
+cp1 <- cumsum(p1) # finding the cumulative sum
+
+cdf1 <- qplot(x1,                # telling R to plot x
+              weight = cp1,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t1+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = "CDF, first set of parameters",
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Graphing the CDF for the second set
+x2 <- 0:t2   # for any number of trials t, there are t+1 possible successes
+p2 <- dbinom(x2,t2,prob2) # dbinom function takes value and returns probability
+cp2 <- cumsum(p2) # finding the cumulative sum
+
+cdf2 <- qplot(x2,                # telling R to plot x
+              weight = cp2,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t2+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = "CDF, second set of parameters",
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Displaying the graphs
+
+cdf1+cdf2 +plot_layout(ncol=1)
+
+
+# Let's keep the number of trials t constant to evaluate how different p's change the CDF
+
+# a) Parameters: t=20, prob=0.15
+t3 <- 20
+prob3 <- 0.15
+
+x3 <- 0:t3  # for any number of trials t, there are t+1 possible successes
+p3 <- dbinom(x3,t3,prob3) # dbinom function takes value and returns probability
+cp3 <- cumsum(p3) # finding the cumulative sum
+
+cdf3 <- qplot(x3,                # telling R to plot x
+              weight = cp3,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t3+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t3, "| probability = ", prob3),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# b) Parameters: t=20, prob=0.35
+t4 <- 20
+prob4 <- 0.35
+
+x4 <- 0:t4  # for any number of trials t, there are t+1 possible successes
+p4 <- dbinom(x4,t4,prob4) # dbinom function takes value and returns probability
+cp4 <- cumsum(p4) # finding the cumulative sum
+
+cdf4 <- qplot(x4,                # telling R to plot x
+              weight = cp4,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t4+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t4, "| probability = ", prob4),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# c) Parameters: t=20, prob=0.65
+t5 <- 20
+prob5 <- 0.65
+
+x5 <- 0:t5  # for any number of trials t, there are t+1 possible successes
+p5 <- dbinom(x5,t5,prob5) # dbinom function takes value and returns probability
+cp5 <- cumsum(p5) # finding the cumulative sum
+
+cdf5 <- qplot(x5,                # telling R to plot x
+              weight = cp5,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t5+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t5, "| probability = ", prob5),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# d) Parameters: t=20, prob=0.85
+t6 <- 20
+prob6 <-0.85
+
+x6 <- 0:t6  # for any number of trials t, there are t+1 possible successes
+p6 <- dbinom(x6,t6,prob6) # dbinom function takes value and returns probability
+cp6 <- cumsum(p6) # finding the cumulative sum
+
+cdf6 <- qplot(x6,                # telling R to plot x
+              weight = cp6,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t6+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t6, "| probability = ", prob6),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Displaying the graphs:
+(cdf3+cdf4)/(cdf5+cdf6)
+
+@
+
+As p gets larger, the CDF rises later in the support.\\
+
+<<>>=
+# Now, let's keep p constant to evaluate how different t's change the CDF.
+
+# a) Parameters: t=5, prob=0.35
+t7 <- 5
+prob7 <- 0.35
+
+x7 <- 0:t7  # for any number of trials t, there are t+1 possible successes
+p7 <- dbinom(x7,t7,prob7) # dbinom function takes value and returns probability
+cp7 <- cumsum(p7) # finding the cumulative sum
+
+cdf7 <- qplot(x7,                # telling R to plot x
+              weight = cp7,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t7+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t7, "| probability = ", prob7),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# b) Parameters: t=10, prob=0.35
+t8 <- 10
+prob8 <- 0.35
+
+x8 <- 0:t8  # for any number of trials t, there are t+1 possible successes
+p8 <- dbinom(x8,t8,prob8) # dbinom function takes value and returns probability
+cp8 <- cumsum(p8) # finding the cumulative sum
+
+cdf8 <- qplot(x8,                # telling R to plot x
+              weight = cp8,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t8+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t8, "| probability = ", prob8),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# c) Parameters: t=25, prob=0.35
+t9 <- 25
+prob9 <- 0.35
+
+x9 <- 0:t9  # for any number of trials t, there are t+1 possible successes
+p9 <- dbinom(x9,t9,prob9) # dbinom function takes value and returns probability
+cp9 <- cumsum(p9) # finding the cumulative sum
+
+cdf9 <- qplot(x9,                # telling R to plot x
+              weight = cp9,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t9+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t9, "| probability = ", prob9),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# d) Parameters: t=50, prob=0.35
+t10 <- 50
+prob10 <- 0.35
+
+x10 <- 0:t10  # for any number of trials t, there are t+1 possible successes
+p10 <- dbinom(x10,t10,prob10) # dbinom function takes value and returns probability
+cp10 <- cumsum(p10) # finding the cumulative sum
+
+cdf10 <- qplot(x10,                # telling R to plot x
+              weight = cp10,       # weighted by the cumulative probabilities
+              geom="histogram",    # telling R we want a histogram
+              bins=t10+1,          # we have t+1 possible successes
+              col=I("black"),      # histogram border color
+              main = paste("trials = ",t10, "| probability = ", prob10),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# Displaying the graphs
+(cdf7+cdf8)/(cdf9+cdf10)
+
+@		
+		
+Increasing the number of trials does not change the shape of the CDF, but it does increase the number of bins. Note that the CDF is valid since the values start at 0 and end at 1 for each of the graphs.		
+  \hfill $\Box$ 
+  \vskip 5pt 
+	 
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (f)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
   two sets of parameter(s). In a $4 \times 2$ grid, plot a histogram (with bin 
   size 1) of each set of data and superimpose the true mass function at the 
-  specified parameter values. Interpret the results.
+  specified parameter values. Interpret the results.\\
+  	\textbf{Solution:}
+<<>>=
+##########################
+# For SET 1
+##########################
+
+# Insert parameters:
+n <- 10   # number of values to generate
+t <- 40   # number of trials
+p <- 0.5  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf1 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background                 
+
+
+# Insert parameters:
+n <- 25   # number of values to generate
+t <- 40   # number of trials
+p <- 0.5  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf2 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background                 
+
+
+# Insert parameters:
+n <- 100   # number of values to generate
+t <- 40   # number of trials
+p <- 0.5  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf3 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background                 
+
+
+# Insert parameters:
+n <- 1000   # number of values to generate
+t <- 40   # number of trials
+p <- 0.5  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf4 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background  
+
+
+(pmf1+pmf2)/(pmf3+pmf4)
+
+#################################
+# For SET 2
+#################################
+
+# Insert parameters:
+n <- 10    # number of values to generate
+t <- 20    # number of trials
+p <- 0.25  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf5 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background                 
+
+
+# Insert parameters:
+n <- 25    # number of values to generate
+t <- 20    # number of trials
+p <- 0.25  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf6 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background    
+
+# Insert parameters:
+n <- 100    # number of values to generate
+t <- 20     # number of trials
+p <- 0.25   # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf7 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background    
+
+# Insert parameters:
+n <- 1000    # number of values to generate
+t <- 20      # number of trials
+p <- 0.25    # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf8 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background   
+
+
+(pmf5+pmf6)/(pmf7+pmf8)
+@
+
+In both cases, we see that, as we increase the sample size, our stimulations get closer and closer to the true mass function for the binomial distribution.
+  \hfill $\Box$ 
+  \vskip 5pt
 	\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -426,13 +1450,77 @@ options(warn=0) #Re-enable warnings
   %%%%%%%%%  Part (a)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Provide the mean, standard deviation, skewness, and kurtosis of the PMF. 
-  Ensure to interpret each.
+  Ensure to interpret each.\\
+  \textbf{Solution:}\\
+  The binomial distribution helps model discrete sets of data with a certain 
+  number of trials with a probability of success. 
+  The mean of this distribution is 
+  \[\textbf{Mean} = np\]
+  This makes sense, because the average number of successes is given by the 
+  above formula.
+  The standard deviation of this distribution is 
+  \[\textbf{SD} = np(1-p)\]
+  This is just multiplying the probability of failiure with the mean, which then
+  gives the variance. 
+  The skewness is 
+  \[\textbf{Skewness} = \frac{1 - 2p}{\sqrt{np(1-p)}}\]
+  For a small p and small n, the distribution will be skewed right since there 
+  are a low number of successes. For a large p and small n, the distribution is
+  skewed left, since there are a high number of successes. For p = 0.5, the 
+  skewness is 0, since the distribution becomes symmetric. 
+  The kurtosis of the distribution is 
+  \[\textbf{Kurtosis} = \frac{1-6p(1-p)}{np(1-p)}\]
+  The kurtosis tells us the rate of outliers in a given set of data. 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (b)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
   two sets of parameter(s). Calculate the sample mean, standard deviation, 
-  skewness, and kurtosis. Interpret the results.
+  skewness, and kurtosis. Interpret the results.\\
+  \textbf{Solution:}
+  <<>>=
+  library(e1071) #allows skewness and kurtosis
+  #The two sets of parameters are -
+  #40 coin tosses with the success being a heads 
+  set.seed(345) #helps with testing again
+  t1 = 40
+  prob1 = 0.5
+  #20 rolls of a D4 with success being a 1 rolled
+  t2 = 20
+  prob2 = 0.25
+  #generating each set of data for each parameter
+  n.10.1 <- rbinom(10, t1, prob1)
+  n.10.2 <- rbinom(10, t2, prob2)
+  n.25.1 <- rbinom(25, t1, prob1)
+  n.25.2 <- rbinom(25, t2, prob2)
+  n.100.1 <- rbinom(100, t1, prob1)
+  n.100.2 <- rbinom(100, t2, prob2)
+  n.1000.1 <- rbinom(1000, t1, prob1)
+  n.1000.2 <- rbinom(1000, t2, prob2)
+  #making a dataframe of the samples
+  stat1 <- data.frame(n.10.1,
+                      n.25.1,
+                      n.100.1,
+                      n.1000.1,
+                      n.10.2,
+                      n.25.2,
+                      n.100.2,
+                      n.1000.2)
+  #applying the R functions and listing the results
+  #Mean
+  apply(stat1, 2, mean)
+  #Standard Deviation
+  apply(stat1, 2, sd)
+  #Skewness
+  apply(stat1, 2, skewness)
+  #kurtosis
+  apply(stat1, 2, kurtosis)
+  @
+  The mean is usually close to the the actual mean regardless of number of 
+  samples. It would make sense for the standard deviation to increase with the
+  sample size, since there are more values. 
+  The skewness and kurtosis both tend to decreases with a higher number of 
+  samples. 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (c)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -440,7 +1528,115 @@ options(warn=0) #Re-enable warnings
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
   In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
   with (1) the method of moments estimated distribution, (2) the maximum likelihood 
-  estimated distribution, and superimpose the true distribution in both.
+  estimated distribution, and superimpose the true distribution in both.\\
+   \textbf{Solution: }
+   The functions that are used for parts c through f are listed below.
+   The moments for the binomial distribution were obtained via \citep{binomial2002},
+   and
+  <<message = FALSE, warning = FALSE, fig.dim=c(12,8)>>=
+  set.seed(32423)
+  library(tidyverse)
+  library(patchwork)
+  binom.mom <- function(par, data){#calculates binomial MOM Estimator
+    #adapted from Prof. Cipolli's Chapter 7 notes
+    n <- par[1] #par[1] has the size n
+    p <- par[2] # par[2] has the probability p
+    #Here, k = 2 since estimator is highly variable at k>2
+    #First two population moments
+    EX1 <- n*p 
+    EX2 <- n*p*(1-p + n*p) #moments found in notes
+    eq1 <- EX1 - mean(data) #sample moment 1
+    eq2 <- EX2 - mean(data^2) #sample moment 2
+    c(eq1, eq2)
+  }
+  # calculates Maximum Likelihood Estimator via negative log likelihood
+  binom.MLE <- function(par, data, neg = T){
+    #adapted from Prof. Cipolli's Chapter 7 notes
+    n <- par[1]
+    p <- par[2]
+    #sums up the probability mass function for the sample 
+    MLE <- sum(dbinom(x = data, size = n, prob = p, log=TRUE))
+    ifelse(!neg,MLE,-MLE) #just in case neg is changed 
+  }
+  
+  library(nleqslv)# used to calculate MOM 
+  
+  find.binom.mom.mle <-function(n, par){ 
+    #function that calculates and plots MOM and MLE
+  Sample = rbinom(n, size = par[1], prob =par[2]) 
+  #creating the sample for this set of parameters
+  moms<-nleqslv(x = c(par[1], par[2]), #passes in size and probability
+  fn = binom.mom,
+  data=Sample)
+  #this essentially minimizes the difference between the sample and population 
+  #moments. It then returns the corresponding n and p
+  mles <- optim(fn = binom.MLE,
+                par = c(par[1], par[2]),
+                data = Sample)
+  #mles optimizes the MLE for the given parameters
+  #plotting MOM graph
+    plot_mom = ggplot() +
+      geom_histogram(aes(x = Sample,
+                         y = ..density..),
+                     binwidth = 1, 
+                     color = "black", 
+                     fill ="lightgreen") +
+      geom_hline(yintercept = 0) +
+      theme_bw() + 
+      xlim(0, par[1]) + 
+      geom_linerange(size = 0.7, aes(x=0:par[1], 
+                         ymin=0, 
+                         ymax=dbinom(0:par[1], 
+                                     size = round(moms$x[1]),
+                                     prob = moms$x[2]))) +
+      xlab("Number of successes") +
+      ylab("Proportion") + 
+      ggtitle(paste("Methods of Moments Estimator n =", n, sep=" "), 
+              subtitle = paste("Size Estimate =", round(moms$x[1], 3), 
+                               ", Probability Estimate =", round(moms$x[2], 3),
+                               sep =" ")) +
+      theme(plot.title = element_text(hjust = 0.5, size = 25),
+            plot.subtitle = element_text(hjust = 0.5, size = 20),
+            axis.text=element_text(size=20),
+            axis.title.x = element_text(size = 20),
+            axis.title.y = element_text(size = 20))
+    
+  #plotting MLE graph
+    plot_mle = ggplot() +
+      geom_histogram(aes(x = Sample,
+                         y = ..density..),
+                     binwidth = 1, 
+                     color = "black", 
+                     fill ="lightgreen") +
+      geom_hline(yintercept = 0) +
+      theme_bw() + 
+      xlim(0, par[1]) + 
+      geom_linerange(size = 0.7,aes(x=0:par[1], 
+                         ymin=0, 
+                         ymax=dbinom(0:par[1], 
+                                     size = round(mles$par[1]),
+                                     prob = mles$par[2]))) +
+      xlab("Number of successes") +
+      ylab("Proportion") + 
+      ggtitle(paste("Maximum Likelihood Estimator n =", n, sep=" "), 
+              subtitle = paste("Size Estimate =", round(mles$par[1], 3), 
+                               ", Probability Estimate =", round(mles$par[2], 3),
+                               sep =" ")) +
+      theme(plot.title = element_text(hjust = 0.5, size = 25),
+            plot.subtitle = element_text(hjust = 0.5, size = 20),
+            axis.text=element_text(size=20),
+            axis.title.x = element_text(size = 20),
+            axis.title.y = element_text(size = 20))
+     
+      
+        plot_mom+plot_mle
+  }
+  @
+  
+  <<warning = FALSE,fig.dim=c(16,9)>>=
+   find.binom.mom.mle(10, c(t1, prob1))
+   find.binom.mom.mle(10, c(t2, prob2))
+  @
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (d)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -448,7 +1644,12 @@ options(warn=0) #Re-enable warnings
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
   In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
   with (1) the method of moments estimated distribution, (2) the maximum likelihood 
-  estimated distribution, and superimpose the true distribution in both.
+  estimated distribution, and superimpose the true distribution in both.\\
+  \textbf{Solution:}
+   <<warning = FALSE,fig.dim=c(16,9)>>=
+   find.binom.mom.mle(25, c(t1, prob1))
+   find.binom.mom.mle(25, c(t2, prob2))
+  @
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (e)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -456,7 +1657,12 @@ options(warn=0) #Re-enable warnings
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s). 
   In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
   with (1) the method of moments estimated distribution, (2) the maximum likelihood
-  estimated distribution, and superimpose the true distribution in both.
+  estimated distribution, and superimpose the true distribution in both.\\
+  \textbf{Solution:}
+   <<warning = FALSE,fig.dim=c(16,9)>>=
+   find.binom.mom.mle(100, c(t1, prob1))
+   find.binom.mom.mle(100, c(t2, prob2))
+  @
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (f)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -464,11 +1670,26 @@ options(warn=0) #Re-enable warnings
   Calculate the method of moments estimator(s) and maximum likelihood estimator(s).
   In a $1 \times 2$ grid, plot a histogram (with bin size 1) of each set of data 
   with (1) the method of moments estimated distribution, (2) the maximum likelihood
-  estimated distribution, and superimpose the true distribution in both.
+  estimated distribution, and superimpose the true distribution in both.\\
+  \textbf{Solution:}
+   <<warning = FALSE,fig.dim=c(16,9)>>=
+   find.binom.mom.mle(1000, c(t1, prob1))
+   find.binom.mom.mle(1000, c(t2, prob2))
+  @
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (g)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \item Comment on the results of parts (c)-(f). 
+  \item Comment on the results of parts (c)-(f). \\
+  \textbf{Solution:}
+  As seen in the plots above, the size estimate for the MOM Estimator is very inaccurate 
+  for n = 10 and n = 25, but gets increasingly closer as n increases. This corresponds with 
+  the Weak Law of Large Numbers. This pattern is also seen for the MOM Estimator of the 
+  probability estimate. The MLE estimator is a different since the size estimate provided by 
+  it is almost always completely accurate, and the probability estimate is very close even for 
+  n = 10. To find out which Estimator is better, we would need to run this for a larger array 
+  of samples, since it is completely possible that the MLE is not as good at providing estimate 
+  for some other parameters. Overall, these estimates look very close to the data generates, 
+  especially at higher n values. 
 \end{enumerate}
 \end{enumerate}%End overall enumerate
 \newpage
