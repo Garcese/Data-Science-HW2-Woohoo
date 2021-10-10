@@ -1,23 +1,20 @@
 \documentclass{article}
-\usepackage{amsmath}           %This allows me to use the align functionality.
-                               %If you find yourself trying to replicate
-                               %something you found online, ensure you're
-                               %loading the necessary packages!
-\usepackage{amsfonts}          %Math font
-\usepackage{graphicx}          %For including graphics
-\usepackage{hyperref}          %For Hyperlinks
-\hypersetup{colorlinks = true,citecolor=black}
-\usepackage{natbib}                      %For the bibliography
-\bibliographystyle{apalike}              %For the bibliography
-\usepackage[margin=1.0in]{geometry}      %Cite this later      
-\usepackage{graphicx}                    %Cite this later
-\graphicspath{ {./Images/} }             %Cite this later
-\usepackage{float}                       %Cite this later
-\usepackage{changepage}                  %Cite this later
-
+%%%%%%%%%%LATEX PACKAGES - SEE BIBLIOGRAPHY FOR CITATIONS%%%%%%%%%%
+\usepackage{amsmath}                      %Math symbols/equations/layout
+\usepackage{amsfonts}                     %Math font
+\usepackage{graphicx}                     %For including graphics
+    \graphicspath{ {./Images/} }     
+\usepackage{hyperref}                     %For Hyperlinks
+    \hypersetup{colorlinks = true,citecolor=black}
+\usepackage{natbib}                       %For the bibliography
+    \bibliographystyle{apalike}               
+\usepackage[margin=1.0in]{geometry}      %For spacing things out    
+\usepackage{float}                       %Also for spacing things
+\usepackage{changepage}                  %Used for adjust width environment
+%%%%%%%%%%%%%%%%%%% BEGIN DOC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \noindent \textbf{MA 354: Data Analysis -- Fall 2021 -- Due 10/8 at 5p}\\
-\noindent \textbf{Homework 2:}\vspace{1em}\\
+\noindent \textbf{Homework 2: Giancarlo Arcese, Aziz Zafar, Tedi Totojani, Div Chamria}\vspace{1em}\\
 \emph{Complete the following opportunities to use what we've talked about in class. These questions will be graded for correctness, communication and succinctness. Ensure you show your work and explain your logic in a legible and refined submission.}\\\vspace{1em}
 %Comments -- anything after % is not put into the PDF
 
@@ -86,9 +83,9 @@ Solution: \textbf{The Gamma distribution models the probability that $\alpha$ ev
   \includegraphics[scale=0.7]{Lower_Gamma.png}
 \end{align}
 
-\textbf{The Gamma distribution is named after the Gamma function, which is principle in it's derivation. The Gamma function is a function that extends the idea of the factorial to all real numbers and even complex numbers, provided that any real input is not a non-negative integer. For positive real inputs, (which is the support for the Gamma distribution), the Gamma function draws a continuous line through all points in the $(x,y)$ plane whose $x$ value is an integer and $y$ value equals $(x + 1)!$.}\\
+\textbf{The Gamma distribution is named after the Gamma function, which is principle in its derivation. The Gamma function is a function that extends the idea of the factorial to all real numbers and even complex numbers, provided that any real input is not a non-negative integer. For positive real inputs, (which is the support for the Gamma distribution), the Gamma function draws a continuous line through all points in the $(x,y)$ plane whose $x$ value is an integer and $y$ value equals $(x + 1)!$.}\\
 
-\textbf{The Gamma function is good at modeling any continuous random variable that takes on positive real values, is uni-modal, and is positively skewed. The Gamma distribution is frequently used in climatology to model random whether variables such as rainfall
+\textbf{The Gamma function is good at modeling any continuous random variable that takes on positive real values, is uni-modal, and is positively skewed. The Gamma distribution is frequently used in climatology to model random weather variables such as rainfall
 \citep{thom1958note}. It has also been used to model the size of insurance claims \citep{boland2007statistical}, multi-path fading of of signal power in wireless communication \citep{wikipedia_2021}, and the age distribution of cancer incidence \citep{belikov2017number}, to name just a few of its applications.} \\ 
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,7 +94,7 @@ Solution: \textbf{The Gamma distribution models the probability that $\alpha$ ev
 	\item Show that you have a valid PDF. You will find the \texttt{integrate()} 
 	function in \texttt{R} helpful. \\
 	
-Solution: \textbf{A valid PDF must not take on negative values and must integrate to one. I explained in part A that it is impossible for the PDF to take on a negative value provided that our random variable $x$ and our shape and rate parameters $\alpha$ and $\beta$ are all greater than zero. With this established, we can test in R whether the PDF integrated from 0 to $\infty$ (our support) equals one. } 
+Solution: \textbf{A valid PDF must not take on negative values and must integrate over its support to one. I explained in part A that it is impossible for the Gamma PDF to take on a negative value provided that our random variable $x$ and our shape and rate parameters $\alpha$ and $\beta$ are all greater than zero. With this established, we can test in R whether the PDF integrated from 0 to $\infty$ (our support) equals one. } 
 
 <<Question1-B>>=
 options(scipen=999)                                 #Remove scientific notation
@@ -135,7 +132,7 @@ integrate(dgamma, 0, Inf, shape = 97, rate = 2)      #Why is this?
 
 \textbf{In the code above, I defined my own Gamma PDF function \texttt{gammaPDF()}, so that I could compare that to the built in \texttt{dgamma()} function that \texttt{R} uses. They return identical values for $\alpha  = 1$ and $\beta = 2$ and both integrate to one. I tried running some for loops to set the integral for various values of $\alpha$ and $\beta$. This is the commented out code. I got an error when computing the integral for large shape values and low rate values when using my own defined function. I'm not sure why this is -- I am sure it has something to do with \texttt{R}'s definition of the Gamma PDF being more clean and polished than my own, since I get no error when running that.}\\
 
-\textbf{I ran the for loop for the built in \texttt{R} density function and the outputted values did not all equal 1 because of a strange rounding issue, but we can see that functionally most of them are one, but I assume \texttt{R} does some approximating when calculating integrals, so they are bounded below by 0.999999 and above by 1.000001. There were, however, six values that weren't one, and in fact they were all close to 0. You can see on the last line of code that the integral should equate to 1, but doesn't, it equals approximately zero. I have no idea why this -- or why it only occurred for six values of $\alpha$ and $\beta$. I am going to assume this is an \texttt{R} mistake, perhaps something do with numbers being too small and messing with \texttt{R}'s logic. After a conversation with professor Cipolli, we both agree that the strange behavior is most likely a result of \texttt{R}'s inability to work with extremely small numbers.} \\
+\textbf{I ran the for loop for the built in \texttt{R} density function and the outputted values did not all equal 1 because of a strange rounding issue, but we can see that functionally most of them are one, but I assume \texttt{R} does some approximating when calculating integrals, so they are bounded below by 0.999999 and above by 1.000001. There were, however, six values that weren't one, and in fact they were all close to 0. You can see on the last line of code that the integral should equate to 1, but doesn't, it equals approximately zero. I have no idea why this -- or why it only occurred for six values of $\alpha$ and $\beta$. I am going to assume this is an \texttt{R} mistake, perhaps something to do with numbers being too small and messing with \texttt{R}'s logic. After a conversation with professor Cipolli, we both agree that the strange behavior is most likely a result of \texttt{R}'s inability to work with extremely small numbers.} \\
 
 \textbf{From a theoretical standpoint, the reason the Gamma probability density function integrates to one follows very quickly from some algebra on the Gamma function itself. Essentially, you divide by the gamma function on two sides of an equation, leaving you with one on one side, and a division by the Gamma function on the other, which is exactly what is in the PDF. \href{https://www.youtube.com/watch?v=gIsoceE4vhg&t=144s&ab_channel=LawrenceLeemis}{This} YouTube video explains it better at about one minute.}
 
@@ -146,12 +143,12 @@ integrate(dgamma, 0, Inf, shape = 97, rate = 2)      #Why is this?
 	to find the median based on our PDF to confirm that your numerical approach is 
 	correct. \\
 	
-Solution: \textbf{My two sets of parameters will be $\alpha$ (shape) equals 1, and $\beta$ (rate) equals 0.5, and $\alpha$ (shape) equals 2, and $\beta$ (rate) equals 0.5. I chose these because they result in qualitatively different density curves. In the code below, I use the \texttt{qgamma()} function in \texttt{R} to calculate the 50th quantile of the distribution for the two sets of parameters. It is approximately 1.386295 and 3.356694. We can test this is correct by integrating the PDF from 0 to 1. We get approximately 0.5 which affirms our answer.}
+Solution: \textbf{My two sets of parameters will be $\alpha$ (shape) equals 1, and $\beta$ (rate) equals 0.5, and $\alpha$ (shape) equals 3, and $\beta$ (rate) equals 1. I chose these because they result in qualitatively different density curves. In the code below, I use the \texttt{qgamma()} function in \texttt{R} to calculate the 50th quantile of the distribution for the two sets of parameters. It is approximately 1.386295 and 2.67406. We can test this is correct by integrating the PDF from 0 to 1. We get approximately 0.5 which affirms our answer.}
 <<Question1-C>>=
 qgamma(0.5, 1, 0.5)
-qgamma(0.5, 2, 0.5)
+qgamma(0.5, 3, 1)
 integrate(dgamma, 0, 1.386295, shape = 1, rate = 0.5)   
-integrate(dgamma, 0, 3.356694, shape = 2, rate = 0.5)   
+integrate(dgamma, 0, 2.67406, shape = 3, rate = 1)   
 @
 \textbf{There is no closed-form solution for calculating the median -- Only numerical estimates are possible. There are ways to approximate the median using the mean, but still no closed form solution \citep{wikipedia_2021}. A plethora of interesting properties have been discovered about the median, such as finding an asymptotic formula for the median, connecting the median to the Ramanujan sequence, and many other ways to bound the median, or expand it asymptotically \citep{YOU2017487}.} 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -175,7 +172,7 @@ dg.main <- dgamma(x, 1, 0.5)
 dg.1.2 <- dgamma(x, 1, 2)
 dg.1.5 <- dgamma(x, 1, 5)
 dg.2.0.5 <- dgamma(x, 2, 0.5)
-dg.3.0.5 <- dgamma(x, 3, 0.5)
+dg.3.1 <- dgamma(x, 3, 1)
 dg.4.0.5 <- dgamma(x, 4, 0.5)
 #above is the density curve evaluated at vec x for various parameters
 gg1 <- ggplot() + 
@@ -183,14 +180,14 @@ gg1 <- ggplot() +
   geom_line(aes(x, dg.1.2, colour="Shape = 1, Rate = 2")) +
   geom_line(aes(x, dg.1.5, colour="Shape = 1, Rate = 5")) +
   geom_line(aes(x, dg.2.0.5, colour="Shape = 2, Rate = 0.5")) +
-  geom_line(aes(x, dg.3.0.5, colour="Shape = 3, Rate = 0.5")) +
+  geom_line(aes(x, dg.3.1, colour="Shape = 3, Rate = 1")) +
   geom_line(aes(x, dg.4.0.5, colour="Shape = 4, Rate = 0.5")) +
   scale_color_manual(name = "Parameter Values", 
                      values = c("Shape = 1, Rate = 0.5" = "red", 
                                 "Shape = 1, Rate = 2" = "orange", 
                                 "Shape = 1, Rate = 5" = "yellow",
                                 "Shape = 2, Rate = 0.5" = "green",
-                                "Shape = 3, Rate = 0.5" = "blue",
+                                "Shape = 3, Rate = 1" = "blue",
                                 "Shape = 4, Rate = 0.5" = "purple"
                                )
                      ) +
@@ -216,9 +213,9 @@ cg.1.5 <- NULL
 cg.2.0.5 <- NULL
   for (i in x) {cg.2.0.5 <- c(cg.2.0.5, integrate(dgamma, 0, i, shape = 2, rate = 0.5)[1])}
   cg.2.0.5 <- unlist(cg.2.0.5)
-cg.3.0.5 <- NULL
-  for (i in x) {cg.3.0.5 <- c(cg.3.0.5, integrate(dgamma, 0, i, shape = 3, rate = 0.5)[1])}
-  cg.3.0.5 <- unlist(cg.3.0.5)
+cg.3.1 <- NULL
+  for (i in x) {cg.3.1 <- c(cg.3.1, integrate(dgamma, 0, i, shape = 3, rate = 1)[1])}
+  cg.3.1 <- unlist(cg.3.1)
 cg.4.0.5 <- NULL
   for (i in x) {cg.4.0.5 <- c(cg.4.0.5, integrate(dgamma, 0, i, shape = 4, rate = 0.5)[1])}
   cg.4.0.5 <- unlist(cg.4.0.5)
@@ -228,14 +225,14 @@ gg2 <- ggplot() +
   geom_line(aes(x, cg.1.2, colour="Shape = 1, Rate = 2")) +
   geom_line(aes(x, cg.1.5, colour="Shape = 1, Rate = 5")) +
   geom_line(aes(x, cg.2.0.5, colour="Shape = 2, Rate = 0.5")) +
-  geom_line(aes(x, cg.3.0.5, colour="Shape = 3, Rate = 0.5")) +
+  geom_line(aes(x, cg.3.1, colour="Shape = 3, Rate = 1")) +
   geom_line(aes(x, cg.4.0.5, colour="Shape = 4, Rate = 0.5")) +
   scale_color_manual(name = "Parameter Values", 
                      values = c("Shape = 1, Rate = 0.5" = "red", 
                                 "Shape = 1, Rate = 2" = "orange", 
                                 "Shape = 1, Rate = 5" = "yellow",
                                 "Shape = 2, Rate = 0.5" = "green",
-                                "Shape = 3, Rate = 0.5" = "blue",
+                                "Shape = 3, Rate = 1" = "blue",
                                 "Shape = 4, Rate = 0.5" = "purple"
                                )
                      ) +
@@ -249,8 +246,8 @@ gg2 <- ggplot() +
 gg1 / gg2                        #Overlay the graphs nicely on top of eachother
 @
 \textbf{For the PDF, changing the shape parameter while keeping rate the same has the effect of making the distribution more platykurtic and more symmetrical (from visual inspection only). Increasing the rate while keeping the shape the same seems to shift more of the distribution towards the y-axis, making the PDF steeper and contain more of the probability for lower x-values. Low Shape parameters causes the distribution to look more like the exponential distribution, which makes sense because the exponential distribution is actually  a special case of the gamma distribution \citep{wikipedia_2021}.} \\ 
-\textbf{Increasing the shape parameter results in the CDF taking on more $x$ values before asymptotically approaching a probability of one. This corresponds with my observation t hat increasing the shape results in a platykurtic distribution that is shifted outward. Increasing the rate has the opposite effect. A higher rate results in the CDF approaching one over fewer $x$ observations. This, again, aligns  with my observations of the PDF, since the  corresponding PDF was much more steep towards the y-axis for low rate values.} \\
-\textbf{We know the CDF is valid because for the various parameters graphed, all t he CDF curves approach one but do not exceed the value of one, which is theoretically correct since  the area under PDF curve is one. Furthermore, the CDFs do not intersect, I'm not sure if this is a property that is necessarily true for all CDFs though.}
+\textbf{Increasing the shape parameter results in the CDF taking on more $x$ values before asymptotically approaching a probability of one. This corresponds with my observation that increasing the shape results in a platykurtic distribution that is shifted outward. Increasing the rate has the opposite effect. A higher rate results in the CDF approaching one over fewer $x$ observations. This, again, aligns  with my observations of the PDF, since the  corresponding PDF was much more steep towards the y-axis for low rate values.} \\
+\textbf{We know the CDF is valid because for the various parameters graphed, all the CDF curves approach one but do not exceed the value of one, which is theoretically correct since  the area under PDF curve is one. Furthermore, the CDFs do not intersect, I'm not sure if this is a property that is necessarily true for all CDFs though.}
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (f)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -259,7 +256,7 @@ gg1 / gg2                        #Overlay the graphs nicely on top of eachother
   of data and superimpose the true density function at the specified parameter 
   values. Interpret the results. \\
   
-Solution: \textbf{Below are the desired graphs. We can see that as the number of observations increases, the closer the data fits into the theoretical distribution curve.} 
+Solution: \textbf{Below are the desired graphs. We can see that as the number of observations increases, the closer the data fits into the theoretical distribution curve. The higher the $n$, the less the data varies from the PDF curve.} 
  
 <<Question1-F>>=
 #Gamma distributed data for first set of parameters
@@ -268,10 +265,10 @@ param.1.25 <- rgamma(25, shape = 1, rate = 0.5)
 param.1.100 <- rgamma(100, shape = 1, rate = 0.5)
 param.1.1000 <- rgamma(1000, shape = 1, rate = 0.5)
 #Gamma distributed data for second set of parameters
-param.2.10 <- rgamma(10, shape = 2, rate = 0.5)
-param.2.25 <- rgamma(25, shape = 2, rate = 0.5)
-param.2.100 <- rgamma(100, shape = 2, rate = 0.5)
-param.2.1000 <- rgamma(1000, shape = 2, rate = 0.5)
+param.2.10 <- rgamma(10, shape = 3, rate = 1)
+param.2.25 <- rgamma(25, shape = 3, rate = 1)
+param.2.100 <- rgamma(100, shape = 3, rate = 1)
+param.2.1000 <- rgamma(1000, shape = 3, rate = 1)
 #Append the vectors together
 param.set.1.vec <- c(param.1.10, param.1.25, param.1.100, param.1.1000)
 param.set.2.vec <- c(param.2.10, param.2.25, param.2.100, param.2.1000)
@@ -308,7 +305,7 @@ facet.function <- function(param.set, p.shape, p.rate)  {
 #Plot the graphs for the two sets of parameters. Options removes error messages
 options(warn=-1) #disable warnings for a second
 a <- facet.function(param.set.1.vec, 1, 0.5) + theme(panel.spacing = unit(1, "lines"))  
-b <- facet.function(param.set.2.vec, 2, 0.5) + theme(panel.spacing = unit(1, "lines"))
+b <- facet.function(param.set.2.vec, 3, 1) + theme(panel.spacing = unit(1, "lines"))
 a / b
 options(warn=0) #Re-enable warnings
 @
@@ -477,4 +474,3 @@ options(warn=0) #Re-enable warnings
 \newpage
 \bibliography{bib}
 \end{document}
-
