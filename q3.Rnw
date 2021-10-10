@@ -9,11 +9,10 @@
 \hypersetup{colorlinks = true,citecolor=black}
 \usepackage{natbib}         %For the bibliography
 \bibliographystyle{apalike} %For the bibliography
-\bibliography{References}   %ADDED
 \usepackage[margin=1.0in]{geometry}
 \usepackage{float}
 \begin{document}
-\noindent \textbf{MA 354: Data Analysis -- Fall 2021 -- Due 10/8 at 5p}\\%\\ gives you a new line
+\noindent \textbf{MA 354: Data Analysis -- Fall 2021 -- Due 10/8 at 5p}\\
 \noindent \textbf{Homework 2:}\vspace{1em}\\
 
 << message=FALSE, warning=FALSE>>=
@@ -47,16 +46,18 @@ library(ggplot2)
   some exciting applications of this distribution? Cite all of your sources.\\
   \textbf{Solution:}
   
-  Let us consider the binomial distribution. The binomial distribution is a discrete distribution that models the number of successes of $n$ Bernoulli trials. It is used to model any experiment of the sort when we can denote one outcome as "success" or "outcome of interest", provided that this outcome has a set probability of happening. Examples of experiments that can be modeled using the binomial distribution include, flipping a coin (pick heads or tails to be our success), drawing a card from a standard deck (consider some card a success), etc.
-  Consider that we perform an experiment a total number of $n$ times. We can have $0$ successes or $n$ successes, as well as everything in between. So, the support of the distribution goes from $0$ to $n$, and has $n+1$ elements. Per Philippou and Antzoulakos, here are the PMF and the CDF for the distribution. % CITE PHILIPPOU AND ANTZOULAKOS
+  Let us consider the binomial distribution. The binomial distribution is a discrete distribution that models the number of successes of $n$ Bernoulli trials. It is used to model any experiment of the sort when we can denote one outcome as "success" or "outcome of interest", provided that this outcome has a set probability of happening. Examples of experiments that can be modeled using the binomial distribution include, flipping a coin (pick heads or tails to be our success), drawing a card from a standard deck (consider some card a success), etc. \citep{philippou2011binomial}, \citep{wiki:Binomial_distribution}\\
+  
+  Consider that we perform an experiment a total number of $n$ times. We can have $0$ successes or $n$ successes, as well as everything in between. So, the support of the distribution goes from $0$ to $n$, and has $n+1$ elements. Here are the PMF and the CDF for the distribution. \citep{philippou2011binomial}
+  
   
   PMF:
   $$f(x) = P(X=x) = \binom{n}{x} p^x q^{n-x}, x= \{0,1,2, \cdots, n\}$$
   CDF:
   $$F(x) = P(X \leq x) = \sum_{i=0}^{x} \binom{n}{i} p^i q^{n-i}$$
   
-The distribution was derived by Jacob Bernoulli, with special cases being derived by Blaise Pascal. The name of the distribution comes from the binomial theorem. % CITE PHILIPPOU AND ANTZOULAKOS, WIKIPEDIA
-
+The distribution was derived by Jacob Bernoulli, with special cases being derived by Blaise Pascal. The name of the distribution comes from the binomial theorem.
+\citep{philippou2011binomial}, \citep{wiki:Binomial_distribution}
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (b)
@@ -78,7 +79,9 @@ prob2 <- 0.25
 
 @
 
-We show the validity of a PMF by adding up all the individual probabilities and checking to see if they add up to zero.
+We show the validity of a PMF by 
+1 - adding up all the individual probabilities and checking to see if they add up to zero.
+2 - checking to see if all the probabilities are nonnegative
 
 <<>>=
 # Let's check this for the first set:
@@ -94,6 +97,7 @@ repeat{
   }
 }
 print(sum(v))              # sum of all the probabilities should equal 1
+v >= 0                     # the probabilities should be nonnegative
 
 
 # Now let's check it for the second set:
@@ -109,12 +113,12 @@ repeat{
   }
 }
 print(sum(v))              # sum of all the probabilities should equal 1
+v >= 0                     # the probabilities should be nonnegative
 
 @
   \hfill $\Box$ 
   \vskip 5pt
-  
-	
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (c)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,8 +136,7 @@ qbinom(0.5, t2, prob2)
 
 @
 
-Theoretically, if np is an integer, then the median equals mp, which supports our results. % CITE https://en.wikipedia.org/wiki/Binomial_distribution#Median
-
+Theoretically, if np is an integer, then the median equals mp, which supports our results. \citep{wiki:Binomial_distribution}
   \hfill $\Box$ 
   \vskip 5pt
 	
