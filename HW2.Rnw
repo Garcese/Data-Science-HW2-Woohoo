@@ -287,7 +287,10 @@ each other complete the homework in collaboration.
   estimated distribution, and superimpose the true distribution in both.\\
    \textbf{Solution: }
    The functions that are used for parts c through f are listed below.
+   The moments for the binomial distribution were obtained via \citep{binomial2002},
+   and
   <<message = FALSE, warning = FALSE, fig.dim=c(12,8)>>=
+  set.seed(32423)
   library(tidyverse)
   library(patchwork)
   binom.mom <- function(par, data){#calculates binomial MOM Estimator
@@ -297,7 +300,7 @@ each other complete the homework in collaboration.
     #Here, k = 2 since estimator is highly variable at k>2
     #First two population moments
     EX1 <- n*p 
-    EX2 <- n*p*(1-p + n*p) #moments found online cite
+    EX2 <- n*p*(1-p + n*p) #moments found in notes
     eq1 <- EX1 - mean(data) #sample moment 1
     eq2 <- EX2 - mean(data^2) #sample moment 2
     c(eq1, eq2)
@@ -327,6 +330,7 @@ each other complete the homework in collaboration.
                 par = c(par[1], par[2]),
                 data = Sample)
   #mles optimizes the MLE for the given parameters
+  #plotting MOM graph
     plot_mom = ggplot() +
       geom_histogram(aes(x = Sample,
                          y = ..density..),
@@ -341,7 +345,7 @@ each other complete the homework in collaboration.
                          ymax=dbinom(0:par[1], 
                                      size = round(moms$x[1]),
                                      prob = moms$x[2]))) +
-      xlab("Number of successess") +
+      xlab("Number of successes") +
       ylab("Proportion") + 
       ggtitle(paste("Methods of Moments Estimator n =", n, sep=" "), 
               subtitle = paste("Size Estimate =", round(moms$x[1], 3), 
@@ -353,7 +357,7 @@ each other complete the homework in collaboration.
             axis.title.x = element_text(size = 20),
             axis.title.y = element_text(size = 20))
     
-
+  #plotting MLE graph
     plot_mle = ggplot() +
       geom_histogram(aes(x = Sample,
                          y = ..density..),
@@ -368,7 +372,7 @@ each other complete the homework in collaboration.
                          ymax=dbinom(0:par[1], 
                                      size = round(mles$par[1]),
                                      prob = mles$par[2]))) +
-      xlab("Number of successess") +
+      xlab("Number of successes") +
       ylab("Proportion") + 
       ggtitle(paste("Maximum Likelihood Estimator n =", n, sep=" "), 
               subtitle = paste("Size Estimate =", round(mles$par[1], 3), 
@@ -431,7 +435,17 @@ each other complete the homework in collaboration.
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (g)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \item Comment on the results of parts (c)-(f). 
+  \item Comment on the results of parts (c)-(f). \\
+  \textbf{Solution:}
+  As seen in the plots above, the size estimate for the MOM Estimator is very inaccurate 
+  for n = 10 and n = 25, but gets increasingly closer as n increases. This corresponds with 
+  the Weak Law of Large Numbers. This pattern is also seen for the MOM Estimator of the 
+  probability estimate. The MLE estimator is a different since the size estimate provided by 
+  it is almost always completely accurate, and the probability estimate is very close even for 
+  n = 10. To find out which Estimator is better, we would need to run this for a larger array 
+  of samples, since it is completely possible that the MLE is not as good at providing estimate 
+  for some other parameters. Overall, these estimates look very close to the data generates, 
+  especially at higher n values. 
 \end{enumerate}
 \end{enumerate}%End overall enumerate
 \newpage
