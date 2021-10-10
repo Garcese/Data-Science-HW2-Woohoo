@@ -1,4 +1,54 @@
-\documentclass{article}
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 \usepackage{amsmath}           %This allows me to use the align functionality.
                                %If you find yourself trying to replicate
                                %something you found online, ensure you're
@@ -14,7 +64,7 @@
 \graphicspath{ {./Images/} }             %Cite this later
 \usepackage{float}                       %Cite this later
 \usepackage{changepage}                  %Cite this later
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 \noindent \textbf{MA 354: Data Analysis -- Fall 2021 -- Due 10/8 at 5p}\\
 \noindent \textbf{Homework 2:}\vspace{1em}\\
@@ -65,11 +115,7 @@ each other complete the homework in collaboration.
   Google Scholar by clicking the cite button below the article of interest and 
   selecting the BibTeX option. \\
   
-<<include=F>>=
-#Load necessary R packages
-library(tidyverse)     
-library(patchwork)
-@
+
   
 Solution: \textbf{The Gamma distribution models the probability that $\alpha$ events occur in a Poisson process with mean arrival time \large $\beta = \frac{1}{\theta}$, $\theta$ \normalsize a scale parameter. \citep{analytica_wiki}. The probability density function, which is a function of the random variable $x$, and our parameters $\alpha$ and $\beta$ is given in the equation below: (provided by \cite{wikipedia_2021})}
 \begin{align}
@@ -99,39 +145,96 @@ Solution: \textbf{The Gamma distribution models the probability that $\alpha$ ev
 	
 Solution: \textbf{A valid PDF must not take on negative values and must integrate to one. I explained in part A that it is impossible for the PDF to take on a negative value provided that our random variable $x$ and our shape and rate parameters $\alpha$ and $\beta$ are all greater than zero. With this established, we can test in R whether the PDF integrated from 0 to $\infty$ (our support) equals one. } 
 
-<<Question1-B>>=
-options(scipen=999)                                 #Remove scientific notation
-gammaPDF <- function(x, a, b) {                     #define PDF function ourself
-  (1/(gamma(a)))*(b^a)*(x^(a-1))*(exp(1)^(-b*x))    #a is shape, b is rate.
-}
- 
-gammaPDF(1, 1, 0.5)                                 
-dgamma(1, 1, 0.5)                
-#We see the value for the built in gamma density function dgamma() is the dame as ours 
-integrate(gammaPDF, 0, Inf, a = 1, b = 0.5)
-integrate(dgamma, 0, Inf, shape = 1, rate = 0.5)
-#Furthermore, when we integrate from 0 to Inf we get 1, which is expected.
-#string.of.ones <- NULL
-#for (i in 1:100) {
-  #for (j in 1:100) {
-    #string.of.ones <- c(string.of.ones, integrate(gammaPDF, 0, Inf, a = i, b = j)[1])
-  #}
-#}
-integrate(gammaPDF, 0, Inf, a = 70, b = 1)           #We get a strange error
-integrate(dgamma, 0, Inf, shape = 70, rate = 1)      #works for R function tho
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{options}\hlstd{(}\hlkwc{scipen}\hlstd{=}\hlnum{999}\hlstd{)}                                 \hlcom{#Remove scientific notation}
+\hlstd{gammaPDF} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{a}\hlstd{,} \hlkwc{b}\hlstd{) \{}                     \hlcom{#define PDF function ourself}
+  \hlstd{(}\hlnum{1}\hlopt{/}\hlstd{(}\hlkwd{gamma}\hlstd{(a)))}\hlopt{*}\hlstd{(b}\hlopt{^}\hlstd{a)}\hlopt{*}\hlstd{(x}\hlopt{^}\hlstd{(a}\hlopt{-}\hlnum{1}\hlstd{))}\hlopt{*}\hlstd{(}\hlkwd{exp}\hlstd{(}\hlnum{1}\hlstd{)}\hlopt{^}\hlstd{(}\hlopt{-}\hlstd{b}\hlopt{*}\hlstd{x))}    \hlcom{#a is shape, b is rate.}
+\hlstd{\}}
 
-string.of.ones.redo <- NULL
-for (i in 1:100) {
-  for (j in 1:100) {
-    string.of.ones.redo <- c(string.of.ones.redo, integrate(dgamma, 0, Inf, shape = i, rate = j)[1])
-  }
-}
-sum(string.of.ones.redo > 0.999999)
-sum(string.of.ones.redo < 1.000001)                  #6 Values are not 1.
-which(string.of.ones.redo < 0.999999)                #which values
-string.of.ones.redo[9602]                            #It's close to 0 instead.
-integrate(dgamma, 0, Inf, shape = 97, rate = 2)      #Why is this?
-@
+\hlkwd{gammaPDF}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0.5}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3032653
+\end{verbatim}
+\begin{alltt}
+\hlkwd{dgamma}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0.5}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.3032653
+\end{verbatim}
+\begin{alltt}
+\hlcom{#We see the value for the built in gamma density function dgamma() is the dame as ours }
+\hlkwd{integrate}\hlstd{(gammaPDF,} \hlnum{0}\hlstd{,} \hlnum{Inf}\hlstd{,} \hlkwc{a} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{b} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 1 with absolute error < 0.000034
+\end{verbatim}
+\begin{alltt}
+\hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{,} \hlnum{Inf}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 1 with absolute error < 0.000034
+\end{verbatim}
+\begin{alltt}
+\hlcom{#Furthermore, when we integrate from 0 to Inf we get 1, which is expected.}
+\hlcom{#string.of.ones <- NULL}
+\hlcom{#for (i in 1:100) \{}
+  \hlcom{#for (j in 1:100) \{}
+    \hlcom{#string.of.ones <- c(string.of.ones, integrate(gammaPDF, 0, Inf, a = i, b = j)[1])}
+  \hlcom{#\}}
+\hlcom{#\}}
+\hlkwd{integrate}\hlstd{(gammaPDF,} \hlnum{0}\hlstd{,} \hlnum{Inf}\hlstd{,} \hlkwc{a} \hlstd{=} \hlnum{70}\hlstd{,} \hlkwc{b} \hlstd{=} \hlnum{1}\hlstd{)}           \hlcom{#We get a strange error}
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in integrate(gammaPDF, 0, Inf, a = 70, b = 1): non-finite function value}}\begin{alltt}
+\hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{,} \hlnum{Inf}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{70}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{1}\hlstd{)}      \hlcom{#works for R function tho}
+\end{alltt}
+\begin{verbatim}
+## 1 with absolute error < 0.00000026
+\end{verbatim}
+\begin{alltt}
+\hlstd{string.of.ones.redo} \hlkwb{<-} \hlkwa{NULL}
+\hlkwa{for} \hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{100}\hlstd{) \{}
+  \hlkwa{for} \hlstd{(j} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{100}\hlstd{) \{}
+    \hlstd{string.of.ones.redo} \hlkwb{<-} \hlkwd{c}\hlstd{(string.of.ones.redo,} \hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{,} \hlnum{Inf}\hlstd{,} \hlkwc{shape} \hlstd{= i,} \hlkwc{rate} \hlstd{= j)[}\hlnum{1}\hlstd{])}
+  \hlstd{\}}
+\hlstd{\}}
+\hlkwd{sum}\hlstd{(string.of.ones.redo} \hlopt{>} \hlnum{0.999999}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 9994
+\end{verbatim}
+\begin{alltt}
+\hlkwd{sum}\hlstd{(string.of.ones.redo} \hlopt{<} \hlnum{1.000001}\hlstd{)}                  \hlcom{#6 Values are not 1.}
+\end{alltt}
+\begin{verbatim}
+## [1] 10000
+\end{verbatim}
+\begin{alltt}
+\hlkwd{which}\hlstd{(string.of.ones.redo} \hlopt{<} \hlnum{0.999999}\hlstd{)}                \hlcom{#which values}
+\end{alltt}
+\begin{verbatim}
+## value value value value value value 
+##  9602  9701  9702  9801  9802  9901
+\end{verbatim}
+\begin{alltt}
+\hlstd{string.of.ones.redo[}\hlnum{9602}\hlstd{]}                            \hlcom{#It's close to 0 instead.}
+\end{alltt}
+\begin{verbatim}
+## $value
+## [1] 0.00005067519
+\end{verbatim}
+\begin{alltt}
+\hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{,} \hlnum{Inf}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{97}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{2}\hlstd{)}      \hlcom{#Why is this?}
+\end{alltt}
+\begin{verbatim}
+## 0.00005067519 with absolute error < 0.000093
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \textbf{In the code above, I defined my own Gamma PDF function \texttt{gammaPDF()}, so that I could compare that to the built in \texttt{dgamma()} function that \texttt{R} uses. They return identical values for $\alpha  = 1$ and $\beta = 2$ and both integrate to one. I tried running some for loops to set the integral for various values of $\alpha$ and $\beta$. This is the commented out code. I got an error when computing the integral for large shape values and low rate values when using my own defined function. I'm not sure why this is -- I am sure it has something to do with \texttt{R}'s definition of the Gamma PDF being more clean and polished than my own, since I get no error when running that.}\\
 
@@ -147,12 +250,34 @@ integrate(dgamma, 0, Inf, shape = 97, rate = 2)      #Why is this?
 	correct. \\
 	
 Solution: \textbf{My two sets of parameters will be $\alpha$ (shape) equals 1, and $\beta$ (rate) equals 0.5, and $\alpha$ (shape) equals 2, and $\beta$ (rate) equals 0.5. I chose these because they result in qualitatively different density curves. In the code below, I use the \texttt{qgamma()} function in \texttt{R} to calculate the 50th quantile of the distribution for the two sets of parameters. It is approximately 1.386295 and 3.356694. We can test this is correct by integrating the PDF from 0 to 1. We get approximately 0.5 which affirms our answer.}
-<<Question1-C>>=
-qgamma(0.5, 1, 0.5)
-qgamma(0.5, 2, 0.5)
-integrate(dgamma, 0, 1.386295, shape = 1, rate = 0.5)   
-integrate(dgamma, 0, 3.356694, shape = 2, rate = 0.5)   
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{qgamma}\hlstd{(}\hlnum{0.5}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0.5}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1.386294
+\end{verbatim}
+\begin{alltt}
+\hlkwd{qgamma}\hlstd{(}\hlnum{0.5}\hlstd{,} \hlnum{2}\hlstd{,} \hlnum{0.5}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 3.356694
+\end{verbatim}
+\begin{alltt}
+\hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{,} \hlnum{1.386295}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 0.5000002 with absolute error < 0.0000000000000056
+\end{verbatim}
+\begin{alltt}
+\hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{,} \hlnum{3.356694}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{2}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 0.5 with absolute error < 0.0000000000000056
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \textbf{There is no closed-form solution for calculating the median -- Only numerical estimates are possible. There are ways to approximate the median using the mean, but still no closed form solution \citep{wikipedia_2021}. A plethora of interesting properties have been discovered about the median, such as finding an asymptotic formula for the median, connecting the median to the Ramanujan sequence, and many other ways to bound the median, or expand it asymptotically \citep{YOU2017487}.} 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (d)
@@ -169,85 +294,97 @@ integrate(dgamma, 0, 3.356694, shape = 2, rate = 0.5)
 	 
 Solution: \textbf{I answer both part d and e here. Below, I have graphed the probability distribution function for my two specified parameters, as well as other combination of parameters too.}
 	
-<<Question1-DE>>=
-x <- seq(0, 20, 0.01)           #values we evaluate at
-dg.main <- dgamma(x, 1, 0.5)
-dg.1.2 <- dgamma(x, 1, 2)
-dg.1.5 <- dgamma(x, 1, 5)
-dg.2.0.5 <- dgamma(x, 2, 0.5)
-dg.3.0.5 <- dgamma(x, 3, 0.5)
-dg.4.0.5 <- dgamma(x, 4, 0.5)
-#above is the density curve evaluated at vec x for various parameters
-gg1 <- ggplot() + 
-  geom_line(aes(x, dg.main, colour="Shape = 1, Rate = 0.5")) +
-  geom_line(aes(x, dg.1.2, colour="Shape = 1, Rate = 2")) +
-  geom_line(aes(x, dg.1.5, colour="Shape = 1, Rate = 5")) +
-  geom_line(aes(x, dg.2.0.5, colour="Shape = 2, Rate = 0.5")) +
-  geom_line(aes(x, dg.3.0.5, colour="Shape = 3, Rate = 0.5")) +
-  geom_line(aes(x, dg.4.0.5, colour="Shape = 4, Rate = 0.5")) +
-  scale_color_manual(name = "Parameter Values", 
-                     values = c("Shape = 1, Rate = 0.5" = "red", 
-                                "Shape = 1, Rate = 2" = "orange", 
-                                "Shape = 1, Rate = 5" = "yellow",
-                                "Shape = 2, Rate = 0.5" = "green",
-                                "Shape = 3, Rate = 0.5" = "blue",
-                                "Shape = 4, Rate = 0.5" = "purple"
-                               )
-                     ) +
-  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
-  ylim(c(0, 0.5)) +                                            #Limit y we see
-  geom_hline(yintercept=0) +                                   #line on x-axis
-  geom_vline(xintercept=0) +                                   #Line on y-axis
-  ylab("Density") +                                            #y-axis label 
-  ggtitle("Gamma Distribution Probability Density Function")    #Title
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{x} \hlkwb{<-} \hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{20}\hlstd{,} \hlnum{0.01}\hlstd{)}           \hlcom{#values we evaluate at}
+\hlstd{dg.main} \hlkwb{<-} \hlkwd{dgamma}\hlstd{(x,} \hlnum{1}\hlstd{,} \hlnum{0.5}\hlstd{)}
+\hlstd{dg.1.2} \hlkwb{<-} \hlkwd{dgamma}\hlstd{(x,} \hlnum{1}\hlstd{,} \hlnum{2}\hlstd{)}
+\hlstd{dg.1.5} \hlkwb{<-} \hlkwd{dgamma}\hlstd{(x,} \hlnum{1}\hlstd{,} \hlnum{5}\hlstd{)}
+\hlstd{dg.2.0.5} \hlkwb{<-} \hlkwd{dgamma}\hlstd{(x,} \hlnum{2}\hlstd{,} \hlnum{0.5}\hlstd{)}
+\hlstd{dg.3.0.5} \hlkwb{<-} \hlkwd{dgamma}\hlstd{(x,} \hlnum{3}\hlstd{,} \hlnum{0.5}\hlstd{)}
+\hlstd{dg.4.0.5} \hlkwb{<-} \hlkwd{dgamma}\hlstd{(x,} \hlnum{4}\hlstd{,} \hlnum{0.5}\hlstd{)}
+\hlcom{#above is the density curve evaluated at vec x for various parameters}
+\hlstd{gg1} \hlkwb{<-} \hlkwd{ggplot}\hlstd{()} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, dg.main,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 1, Rate = 0.5"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, dg.1.2,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 1, Rate = 2"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, dg.1.5,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 1, Rate = 5"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, dg.2.0.5,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 2, Rate = 0.5"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, dg.3.0.5,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 3, Rate = 0.5"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, dg.4.0.5,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 4, Rate = 0.5"}\hlstd{))} \hlopt{+}
+  \hlkwd{scale_color_manual}\hlstd{(}\hlkwc{name} \hlstd{=} \hlstr{"Parameter Values"}\hlstd{,}
+                     \hlkwc{values} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"Shape = 1, Rate = 0.5"} \hlstd{=} \hlstr{"red"}\hlstd{,}
+                                \hlstr{"Shape = 1, Rate = 2"} \hlstd{=} \hlstr{"orange"}\hlstd{,}
+                                \hlstr{"Shape = 1, Rate = 5"} \hlstd{=} \hlstr{"yellow"}\hlstd{,}
+                                \hlstr{"Shape = 2, Rate = 0.5"} \hlstd{=} \hlstr{"green"}\hlstd{,}
+                                \hlstr{"Shape = 3, Rate = 0.5"} \hlstd{=} \hlstr{"blue"}\hlstd{,}
+                                \hlstr{"Shape = 4, Rate = 0.5"} \hlstd{=} \hlstr{"purple"}
+                               \hlstd{)}
+                     \hlstd{)} \hlopt{+}
+  \hlkwd{scale_x_continuous}\hlstd{(}\hlkwc{breaks} \hlstd{= scales}\hlopt{::}\hlkwd{pretty_breaks}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{10}\hlstd{))} \hlopt{+} \hlcom{#Fix x intervals}
+  \hlkwd{scale_y_continuous}\hlstd{(}\hlkwc{breaks} \hlstd{= scales}\hlopt{::}\hlkwd{pretty_breaks}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{10}\hlstd{))} \hlopt{+} \hlcom{#Fix y intervals}
+  \hlkwd{ylim}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{0.5}\hlstd{))} \hlopt{+}                                            \hlcom{#Limit y we see}
+  \hlkwd{geom_hline}\hlstd{(}\hlkwc{yintercept}\hlstd{=}\hlnum{0}\hlstd{)} \hlopt{+}                                   \hlcom{#line on x-axis}
+  \hlkwd{geom_vline}\hlstd{(}\hlkwc{xintercept}\hlstd{=}\hlnum{0}\hlstd{)} \hlopt{+}                                   \hlcom{#Line on y-axis}
+  \hlkwd{ylab}\hlstd{(}\hlstr{"Density"}\hlstd{)} \hlopt{+}                                            \hlcom{#y-axis label }
+  \hlkwd{ggtitle}\hlstd{(}\hlstr{"Gamma Distribution Probability Density Function"}\hlstd{)}    \hlcom{#Title}
+\end{alltt}
 
-#The code below calculates the CDF for values in the x vector defined above.
-#The code is a bit cumbersome - most likely a cleaner way to do this.
-cg.main <- NULL
-  for (i in x) {cg.main <- c(cg.main, integrate(dgamma, 0, i, shape = 1, rate = 0.5)[1])}
-  cg.main <- unlist(cg.main)
-cg.1.2 <- NULL
-  for (i in x) {cg.1.2 <- c(cg.1.2, integrate(dgamma, 0, i, shape = 1, rate = 2)[1])}
-  cg.1.2 <- unlist(cg.1.2)
-cg.1.5 <- NULL
-  for (i in x) {cg.1.5 <- c(cg.1.5, integrate(dgamma, 0, i, shape = 1, rate = 5)[1])}
-  cg.1.5 <- unlist(cg.1.5)
-cg.2.0.5 <- NULL
-  for (i in x) {cg.2.0.5 <- c(cg.2.0.5, integrate(dgamma, 0, i, shape = 2, rate = 0.5)[1])}
-  cg.2.0.5 <- unlist(cg.2.0.5)
-cg.3.0.5 <- NULL
-  for (i in x) {cg.3.0.5 <- c(cg.3.0.5, integrate(dgamma, 0, i, shape = 3, rate = 0.5)[1])}
-  cg.3.0.5 <- unlist(cg.3.0.5)
-cg.4.0.5 <- NULL
-  for (i in x) {cg.4.0.5 <- c(cg.4.0.5, integrate(dgamma, 0, i, shape = 4, rate = 0.5)[1])}
-  cg.4.0.5 <- unlist(cg.4.0.5)
 
-gg2 <- ggplot() + 
-  geom_line(aes(x, cg.main, colour="Shape = 1, Rate = 0.5")) +
-  geom_line(aes(x, cg.1.2, colour="Shape = 1, Rate = 2")) +
-  geom_line(aes(x, cg.1.5, colour="Shape = 1, Rate = 5")) +
-  geom_line(aes(x, cg.2.0.5, colour="Shape = 2, Rate = 0.5")) +
-  geom_line(aes(x, cg.3.0.5, colour="Shape = 3, Rate = 0.5")) +
-  geom_line(aes(x, cg.4.0.5, colour="Shape = 4, Rate = 0.5")) +
-  scale_color_manual(name = "Parameter Values", 
-                     values = c("Shape = 1, Rate = 0.5" = "red", 
-                                "Shape = 1, Rate = 2" = "orange", 
-                                "Shape = 1, Rate = 5" = "yellow",
-                                "Shape = 2, Rate = 0.5" = "green",
-                                "Shape = 3, Rate = 0.5" = "blue",
-                                "Shape = 4, Rate = 0.5" = "purple"
-                               )
-                     ) +
-  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix x intervals
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) + #Fix y intervals
-  geom_hline(yintercept=0) +                                   #line on x-axis
-  geom_vline(xintercept=0) +                                   #Line on y-axis
-  ylab("Cumulative Density") +                                 #Y-axis label
-  ggtitle("Gamma Distribution Cumulative Density Function")    #Title
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Scale for 'y' is already present. Adding another scale for 'y', which will\\\#\# replace the existing scale.}}\begin{alltt}
+\hlcom{#The code below calculates the CDF for values in the x vector defined above.}
+\hlcom{#The code is a bit cumbersome - most likely a cleaner way to do this.}
+\hlstd{cg.main} \hlkwb{<-} \hlkwa{NULL}
+  \hlkwa{for} \hlstd{(i} \hlkwa{in} \hlstd{x) \{cg.main} \hlkwb{<-} \hlkwd{c}\hlstd{(cg.main,} \hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{, i,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)[}\hlnum{1}\hlstd{])\}}
+  \hlstd{cg.main} \hlkwb{<-} \hlkwd{unlist}\hlstd{(cg.main)}
+\hlstd{cg.1.2} \hlkwb{<-} \hlkwa{NULL}
+  \hlkwa{for} \hlstd{(i} \hlkwa{in} \hlstd{x) \{cg.1.2} \hlkwb{<-} \hlkwd{c}\hlstd{(cg.1.2,} \hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{, i,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{2}\hlstd{)[}\hlnum{1}\hlstd{])\}}
+  \hlstd{cg.1.2} \hlkwb{<-} \hlkwd{unlist}\hlstd{(cg.1.2)}
+\hlstd{cg.1.5} \hlkwb{<-} \hlkwa{NULL}
+  \hlkwa{for} \hlstd{(i} \hlkwa{in} \hlstd{x) \{cg.1.5} \hlkwb{<-} \hlkwd{c}\hlstd{(cg.1.5,} \hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{, i,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{5}\hlstd{)[}\hlnum{1}\hlstd{])\}}
+  \hlstd{cg.1.5} \hlkwb{<-} \hlkwd{unlist}\hlstd{(cg.1.5)}
+\hlstd{cg.2.0.5} \hlkwb{<-} \hlkwa{NULL}
+  \hlkwa{for} \hlstd{(i} \hlkwa{in} \hlstd{x) \{cg.2.0.5} \hlkwb{<-} \hlkwd{c}\hlstd{(cg.2.0.5,} \hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{, i,} \hlkwc{shape} \hlstd{=} \hlnum{2}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)[}\hlnum{1}\hlstd{])\}}
+  \hlstd{cg.2.0.5} \hlkwb{<-} \hlkwd{unlist}\hlstd{(cg.2.0.5)}
+\hlstd{cg.3.0.5} \hlkwb{<-} \hlkwa{NULL}
+  \hlkwa{for} \hlstd{(i} \hlkwa{in} \hlstd{x) \{cg.3.0.5} \hlkwb{<-} \hlkwd{c}\hlstd{(cg.3.0.5,} \hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{, i,} \hlkwc{shape} \hlstd{=} \hlnum{3}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)[}\hlnum{1}\hlstd{])\}}
+  \hlstd{cg.3.0.5} \hlkwb{<-} \hlkwd{unlist}\hlstd{(cg.3.0.5)}
+\hlstd{cg.4.0.5} \hlkwb{<-} \hlkwa{NULL}
+  \hlkwa{for} \hlstd{(i} \hlkwa{in} \hlstd{x) \{cg.4.0.5} \hlkwb{<-} \hlkwd{c}\hlstd{(cg.4.0.5,} \hlkwd{integrate}\hlstd{(dgamma,} \hlnum{0}\hlstd{, i,} \hlkwc{shape} \hlstd{=} \hlnum{4}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)[}\hlnum{1}\hlstd{])\}}
+  \hlstd{cg.4.0.5} \hlkwb{<-} \hlkwd{unlist}\hlstd{(cg.4.0.5)}
 
-gg1 / gg2                        #Overlay the graphs nicely on top of eachother
-@
+\hlstd{gg2} \hlkwb{<-} \hlkwd{ggplot}\hlstd{()} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, cg.main,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 1, Rate = 0.5"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, cg.1.2,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 1, Rate = 2"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, cg.1.5,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 1, Rate = 5"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, cg.2.0.5,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 2, Rate = 0.5"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, cg.3.0.5,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 3, Rate = 0.5"}\hlstd{))} \hlopt{+}
+  \hlkwd{geom_line}\hlstd{(}\hlkwd{aes}\hlstd{(x, cg.4.0.5,} \hlkwc{colour}\hlstd{=}\hlstr{"Shape = 4, Rate = 0.5"}\hlstd{))} \hlopt{+}
+  \hlkwd{scale_color_manual}\hlstd{(}\hlkwc{name} \hlstd{=} \hlstr{"Parameter Values"}\hlstd{,}
+                     \hlkwc{values} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"Shape = 1, Rate = 0.5"} \hlstd{=} \hlstr{"red"}\hlstd{,}
+                                \hlstr{"Shape = 1, Rate = 2"} \hlstd{=} \hlstr{"orange"}\hlstd{,}
+                                \hlstr{"Shape = 1, Rate = 5"} \hlstd{=} \hlstr{"yellow"}\hlstd{,}
+                                \hlstr{"Shape = 2, Rate = 0.5"} \hlstd{=} \hlstr{"green"}\hlstd{,}
+                                \hlstr{"Shape = 3, Rate = 0.5"} \hlstd{=} \hlstr{"blue"}\hlstd{,}
+                                \hlstr{"Shape = 4, Rate = 0.5"} \hlstd{=} \hlstr{"purple"}
+                               \hlstd{)}
+                     \hlstd{)} \hlopt{+}
+  \hlkwd{scale_x_continuous}\hlstd{(}\hlkwc{breaks} \hlstd{= scales}\hlopt{::}\hlkwd{pretty_breaks}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{10}\hlstd{))} \hlopt{+} \hlcom{#Fix x intervals}
+  \hlkwd{scale_y_continuous}\hlstd{(}\hlkwc{breaks} \hlstd{= scales}\hlopt{::}\hlkwd{pretty_breaks}\hlstd{(}\hlkwc{n} \hlstd{=} \hlnum{10}\hlstd{))} \hlopt{+} \hlcom{#Fix y intervals}
+  \hlkwd{geom_hline}\hlstd{(}\hlkwc{yintercept}\hlstd{=}\hlnum{0}\hlstd{)} \hlopt{+}                                   \hlcom{#line on x-axis}
+  \hlkwd{geom_vline}\hlstd{(}\hlkwc{xintercept}\hlstd{=}\hlnum{0}\hlstd{)} \hlopt{+}                                   \hlcom{#Line on y-axis}
+  \hlkwd{ylab}\hlstd{(}\hlstr{"Cumulative Density"}\hlstd{)} \hlopt{+}                                 \hlcom{#Y-axis label}
+  \hlkwd{ggtitle}\hlstd{(}\hlstr{"Gamma Distribution Cumulative Density Function"}\hlstd{)}    \hlcom{#Title}
+
+\hlstd{gg1} \hlopt{/} \hlstd{gg2}                        \hlcom{#Overlay the graphs nicely on top of eachother}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: Removed 70 row(s) containing missing values (geom\_path).}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: Removed 47 row(s) containing missing values (geom\_path).}}\end{kframe}
+\includegraphics[width=\maxwidth]{figure/Question1-DE-1} 
+\end{knitrout}
 \textbf{For the PDF, changing the shape parameter while keeping rate the same has the effect of making the distribution more platykurtic and more symmetrical (from visual inspection only). Increasing the rate while keeping the shape the same seems to shift more of the distribution towards the y-axis, making the PDF steeper and contain more of the probability for lower x-values. Low Shape parameters causes the distribution to look more like the exponential distribution, which makes sense because the exponential distribution is actually  a special case of the gamma distribution \citep{wikipedia_2021}.} \\ 
 \textbf{Increasing the shape parameter results in the CDF taking on more $x$ values before asymptotically approaching a probability of one. This corresponds with my observation t hat increasing the shape results in a platykurtic distribution that is shifted outward. Increasing the rate has the opposite effect. A higher rate results in the CDF approaching one over fewer $x$ observations. This, again, aligns  with my observations of the PDF, since the  corresponding PDF was much more steep towards the y-axis for low rate values.} \\
 \textbf{We know the CDF is valid because for the various parameters graphed, all t he CDF curves approach one but do not exceed the value of one, which is theoretically correct since  the area under PDF curve is one. Furthermore, the CDFs do not intersect, I'm not sure if this is a property that is necessarily true for all CDFs though.}
@@ -261,57 +398,65 @@ gg1 / gg2                        #Overlay the graphs nicely on top of eachother
   
 Solution: \textbf{Below are the desired graphs. We can see that as the number of observations increases, the closer the data fits into the theoretical distribution curve.} 
  
-<<Question1-F>>=
-#Gamma distributed data for first set of parameters
-param.1.10 <- rgamma(10, shape = 1, rate = 0.5)
-param.1.25 <- rgamma(25, shape = 1, rate = 0.5)
-param.1.100 <- rgamma(100, shape = 1, rate = 0.5)
-param.1.1000 <- rgamma(1000, shape = 1, rate = 0.5)
-#Gamma distributed data for second set of parameters
-param.2.10 <- rgamma(10, shape = 2, rate = 0.5)
-param.2.25 <- rgamma(25, shape = 2, rate = 0.5)
-param.2.100 <- rgamma(100, shape = 2, rate = 0.5)
-param.2.1000 <- rgamma(1000, shape = 2, rate = 0.5)
-#Append the vectors together
-param.set.1.vec <- c(param.1.10, param.1.25, param.1.100, param.1.1000)
-param.set.2.vec <- c(param.2.10, param.2.25, param.2.100, param.2.1000)
-#For facet grid/wrapping
-a <- replicate(10, "n = 10")
-b <- replicate(25, "n = 25")
-c <- replicate(100, "n = 100")
-d <- replicate(1000, "n = 1000")
-for.facetwrap <- c(a,b,c,d)
-#Create a dataframe of all the gamma distributed data
-param.dat <- data.frame(param.set.1.vec, param.set.2.vec, for.facetwrap)
-#Function returns a plot per parameters you set in
-facet.function <- function(param.set, p.shape, p.rate)  {
-  ggplot(data = param.dat) +
-    geom_histogram(                                           #Plot the data
-      aes(x=param.set, y=..density..),
-      binwidth=0.5,
-      breaks=seq(0,10,0.25)
-      ) +
-    stat_function(                                            #Add in PDF
-      fun=dgamma, 
-      args=list(shape=p.shape, rate=p.rate),
-      color="red"
-      ) +
-    ylim(c(0, 0.5)) +                                         #Limit y we see
-    xlim(c(0, 10)) +                                          #Limit y we see
-    geom_hline(yintercept=0) +                                #line on x-axis
-    geom_vline(xintercept=0) +                                #Line on y-axis
-    ylab("Density") +                                            #y-axis label
-    xlab("x") +                                            #y-axis label 
-    ggtitle(paste(c("Gamma distributed Data of Shape", p.shape, "Rate", p.rate), collapse = " ")) +  
-    facet_grid(~factor(for.facetwrap, levels=c('n = 10','n = 25','n = 100','n = 1000'))) 
-}
-#Plot the graphs for the two sets of parameters. Options removes error messages
-options(warn=-1) #disable warnings for a second
-a <- facet.function(param.set.1.vec, 1, 0.5) + theme(panel.spacing = unit(1, "lines"))  
-b <- facet.function(param.set.2.vec, 2, 0.5) + theme(panel.spacing = unit(1, "lines"))
-a / b
-options(warn=0) #Re-enable warnings
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{#Gamma distributed data for first set of parameters}
+\hlstd{param.1.10} \hlkwb{<-} \hlkwd{rgamma}\hlstd{(}\hlnum{10}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlstd{param.1.25} \hlkwb{<-} \hlkwd{rgamma}\hlstd{(}\hlnum{25}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlstd{param.1.100} \hlkwb{<-} \hlkwd{rgamma}\hlstd{(}\hlnum{100}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlstd{param.1.1000} \hlkwb{<-} \hlkwd{rgamma}\hlstd{(}\hlnum{1000}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlcom{#Gamma distributed data for second set of parameters}
+\hlstd{param.2.10} \hlkwb{<-} \hlkwd{rgamma}\hlstd{(}\hlnum{10}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{2}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlstd{param.2.25} \hlkwb{<-} \hlkwd{rgamma}\hlstd{(}\hlnum{25}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{2}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlstd{param.2.100} \hlkwb{<-} \hlkwd{rgamma}\hlstd{(}\hlnum{100}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{2}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlstd{param.2.1000} \hlkwb{<-} \hlkwd{rgamma}\hlstd{(}\hlnum{1000}\hlstd{,} \hlkwc{shape} \hlstd{=} \hlnum{2}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{0.5}\hlstd{)}
+\hlcom{#Append the vectors together}
+\hlstd{param.set.1.vec} \hlkwb{<-} \hlkwd{c}\hlstd{(param.1.10, param.1.25, param.1.100, param.1.1000)}
+\hlstd{param.set.2.vec} \hlkwb{<-} \hlkwd{c}\hlstd{(param.2.10, param.2.25, param.2.100, param.2.1000)}
+\hlcom{#For facet grid/wrapping}
+\hlstd{a} \hlkwb{<-} \hlkwd{replicate}\hlstd{(}\hlnum{10}\hlstd{,} \hlstr{"n = 10"}\hlstd{)}
+\hlstd{b} \hlkwb{<-} \hlkwd{replicate}\hlstd{(}\hlnum{25}\hlstd{,} \hlstr{"n = 25"}\hlstd{)}
+\hlstd{c} \hlkwb{<-} \hlkwd{replicate}\hlstd{(}\hlnum{100}\hlstd{,} \hlstr{"n = 100"}\hlstd{)}
+\hlstd{d} \hlkwb{<-} \hlkwd{replicate}\hlstd{(}\hlnum{1000}\hlstd{,} \hlstr{"n = 1000"}\hlstd{)}
+\hlstd{for.facetwrap} \hlkwb{<-} \hlkwd{c}\hlstd{(a,b,c,d)}
+\hlcom{#Create a dataframe of all the gamma distributed data}
+\hlstd{param.dat} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(param.set.1.vec, param.set.2.vec, for.facetwrap)}
+\hlcom{#Function returns a plot per parameters you set in}
+\hlstd{facet.function} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{param.set}\hlstd{,} \hlkwc{p.shape}\hlstd{,} \hlkwc{p.rate}\hlstd{)  \{}
+  \hlkwd{ggplot}\hlstd{(}\hlkwc{data} \hlstd{= param.dat)} \hlopt{+}
+    \hlkwd{geom_histogram}\hlstd{(}                                           \hlcom{#Plot the data}
+      \hlkwd{aes}\hlstd{(}\hlkwc{x}\hlstd{=param.set,} \hlkwc{y}\hlstd{=..density..),}
+      \hlkwc{binwidth}\hlstd{=}\hlnum{0.5}\hlstd{,}
+      \hlkwc{breaks}\hlstd{=}\hlkwd{seq}\hlstd{(}\hlnum{0}\hlstd{,}\hlnum{10}\hlstd{,}\hlnum{0.25}\hlstd{)}
+      \hlstd{)} \hlopt{+}
+    \hlkwd{stat_function}\hlstd{(}                                            \hlcom{#Add in PDF}
+      \hlkwc{fun}\hlstd{=dgamma,}
+      \hlkwc{args}\hlstd{=}\hlkwd{list}\hlstd{(}\hlkwc{shape}\hlstd{=p.shape,} \hlkwc{rate}\hlstd{=p.rate),}
+      \hlkwc{color}\hlstd{=}\hlstr{"red"}
+      \hlstd{)} \hlopt{+}
+    \hlkwd{ylim}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{0.5}\hlstd{))} \hlopt{+}                                         \hlcom{#Limit y we see}
+    \hlkwd{xlim}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{10}\hlstd{))} \hlopt{+}                                          \hlcom{#Limit y we see}
+    \hlkwd{geom_hline}\hlstd{(}\hlkwc{yintercept}\hlstd{=}\hlnum{0}\hlstd{)} \hlopt{+}                                \hlcom{#line on x-axis}
+    \hlkwd{geom_vline}\hlstd{(}\hlkwc{xintercept}\hlstd{=}\hlnum{0}\hlstd{)} \hlopt{+}                                \hlcom{#Line on y-axis}
+    \hlkwd{ylab}\hlstd{(}\hlstr{"Density"}\hlstd{)} \hlopt{+}                                            \hlcom{#y-axis label}
+    \hlkwd{xlab}\hlstd{(}\hlstr{"x"}\hlstd{)} \hlopt{+}                                            \hlcom{#y-axis label }
+    \hlkwd{ggtitle}\hlstd{(}\hlkwd{paste}\hlstd{(}\hlkwd{c}\hlstd{(}\hlstr{"Gamma distributed Data of Shape"}\hlstd{, p.shape,} \hlstr{"Rate"}\hlstd{, p.rate),} \hlkwc{collapse} \hlstd{=} \hlstr{" "}\hlstd{))} \hlopt{+}
+    \hlkwd{facet_grid}\hlstd{(}\hlopt{~}\hlkwd{factor}\hlstd{(for.facetwrap,} \hlkwc{levels}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{'n = 10'}\hlstd{,}\hlstr{'n = 25'}\hlstd{,}\hlstr{'n = 100'}\hlstd{,}\hlstr{'n = 1000'}\hlstd{)))}
+\hlstd{\}}
+\hlcom{#Plot the graphs for the two sets of parameters. Options removes error messages}
+\hlkwd{options}\hlstd{(}\hlkwc{warn}\hlstd{=}\hlopt{-}\hlnum{1}\hlstd{)} \hlcom{#disable warnings for a second}
+\hlstd{a} \hlkwb{<-} \hlkwd{facet.function}\hlstd{(param.set.1.vec,} \hlnum{1}\hlstd{,} \hlnum{0.5}\hlstd{)} \hlopt{+} \hlkwd{theme}\hlstd{(}\hlkwc{panel.spacing} \hlstd{=} \hlkwd{unit}\hlstd{(}\hlnum{1}\hlstd{,} \hlstr{"lines"}\hlstd{))}
+\hlstd{b} \hlkwb{<-} \hlkwd{facet.function}\hlstd{(param.set.2.vec,} \hlnum{2}\hlstd{,} \hlnum{0.5}\hlstd{)} \hlopt{+} \hlkwd{theme}\hlstd{(}\hlkwc{panel.spacing} \hlstd{=} \hlkwd{unit}\hlstd{(}\hlnum{1}\hlstd{,} \hlstr{"lines"}\hlstd{))}
+\hlstd{a} \hlopt{/} \hlstd{b}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/Question1-F-1} 
+\begin{kframe}\begin{alltt}
+\hlkwd{options}\hlstd{(}\hlkwc{warn}\hlstd{=}\hlnum{0}\hlstd{)} \hlcom{#Re-enable warnings}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 	\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
