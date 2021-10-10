@@ -440,7 +440,7 @@ each other complete the homework in collaboration.
   As seen in the plots above, the size estimate for the MOM Estimator is very inaccurate 
   for n = 10 and n = 25, but gets increasingly closer as n increases. This corresponds with 
   the Weak Law of Large Numbers. This pattern is also seen for the MOM Estimator of the 
-  probability estimate. The MLE estimator is a different since the size estimate provided by 
+  probability estimate. The MLE estimator is very different since the size estimate provided by 
   it is almost always completely accurate, and the probability estimate is very close even for 
   n = 10. To find out which Estimator is better, we would need to run this for a larger array 
   of samples, since it is completely possible that the MLE is not as good at providing estimate 
