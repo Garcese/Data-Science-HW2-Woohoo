@@ -74,48 +74,56 @@ find.MOM.MLE = function(n, par){
   print(c(MOM$x, MLE$par))
   #print for testing
   
-  bw = 2 * IQR(Density) / length(Density)^(1/3)
+  
   #using Freedman-Diaconis rule which is found to be robust for histograms
   #reminder to self: cite
   estimated.MOM = rgamma(n, shape = MOM$x[1], scale = MOM$x[2])
+  bw.MOM = 2 * IQR(estimated.MOM, na.rm =T) /
+    length(na.omit(estimated.MOM))^(1/3)
+  
+  true.dist = dgamma(seq(0,10, 0.1), shape = par[1],
+                     scale = par[2])
+  
   plot_MOM = ggplot() +
        geom_histogram(aes(x= estimated.MOM,
-                          y= stat(count)/sum(count)),
-                      binwidth = bw,
+                          y= ..density..),
+                      binwidth = bw.MOM,
                       color = "mediumpurple", fill ="white")+
-       theme_minimal()+ ylab("Relative Frequency")+xlab("Observations")+
+       theme_minimal()+ ylab("Density")+xlab("Observations")+
        geom_hline(yintercept = 0)+
-    geom_line(aes(x= seq(0,10, 0.1),y = dgamma(seq(0,10, 0.1), shape = par[1],
-                                               scale = par[2])*bw),
+    geom_line(aes(x= seq(0,10, 0.1),y = true.dist),
               color ="forestgreen", lwd = 0.7)+
     ggtitle(paste("Methods of Moments Estimator n =", n, sep = " "))+
     theme(plot.title = element_text(hjust = 0.5, size = 9))+
-    xlim(c(0,10))+ylim(c(0, 0.20))
-  #Note that I am plotting relative frequency. I converted density to 
-  #Relative Frequency by multiplying with bin width.
-  ks.MOM = ks.test(estimated.MOM, Density, alternative = "two.sided")
+    xlim(c(0,10))+ylim(c(0, max(true.dist)))
+  
   plot_MOM = plot_MOM +
-    annotate("text", x = 8, y = 0.18, label = paste("p =", round(ks.MOM[[2]],3)))
+    annotate("text", x = 8, y = 0.9*max(true.dist),
+             label = paste("Shape =", round(MOM$x[1],3)))+
+    annotate("text", x = 8, y = 0.85*max(true.dist),
+             label = paste("Scale =", round(MOM$x[2],3)))
   
   estimated.MLE = rgamma(n, shape = MLE$par[1], scale = MLE$par[2])
+  bw.MLE = 2 * IQR(estimated.MLE, na.rm = T) /
+    length(na.omit(estimated.MLE))^(1/3)
   plot_MLE = ggplot() +
     geom_histogram(aes(x= estimated.MLE,
-                       y= stat(count)/sum(count)),
-                   binwidth = bw,
+                       y= ..density..),
+                   binwidth = bw.MLE,
                    color = "mediumpurple", fill ="white")+
-    theme_minimal()+ ylab("Relative Frequency")+xlab("Observations")+
+    theme_minimal()+ ylab("Density")+xlab("Observations")+
     geom_hline(yintercept = 0)+
-    geom_line(aes(x= seq(0,10, 0.1),y = dgamma(seq(0,10, 0.1), shape = par[1],
-                                               scale = par[2])*bw),
+    geom_line(aes(x= seq(0,10, 0.1),y = true.dist),
               color ="forestgreen", lwd = 0.7)+
     ggtitle(paste("Maximum Likelihood Estimator n =", n, sep=" ")) +
     theme(plot.title = element_text(hjust = 0.5, size = 9))+
-    xlim(c(0,10)) +ylim(c(0, 0.20))
-  
-  ks.MLE = ks.test(estimated.MLE, Density, alternative = "two.sided")
+    xlim(c(0,10)) +ylim(c(0, max(true.dist)))
   
   plot_MLE = plot_MLE+
-    annotate("text", x = 8, y = 0.18, label = paste("p = ", round(ks.MLE[[2]], 3)))
+    annotate("text", x = 8, y = 0.9*max(true.dist),
+             label = paste("Shape =", round(MLE$par[1],3)))+
+    annotate("text", x = 8, y = 0.85*max(true.dist),
+             label = paste("Scale =", round(MLE$par[2],3)))
   
   (plot_MOM + plot_MLE)
 }
@@ -149,3 +157,14 @@ find.MOM.MLE = function(n, par){
 # 
 # plot
 # 
+#ks.MLE = ks.test(density(estimated.MLE)$y,
+true.dist, alternative = "two.sided")
+
+plot_MLE = plot_MLE+
+  annotate("text", x = 8, y = 0.8*max(true.dist),
+           label = paste("p = ", round(ks.MLE[[2]], 3)))
+
+ks.MOM = ks.test(density(estimated.MOM)$y, true.dist, alternative = "two.sided")
+plot_MOM = plot_MOM +
+  annotate("text", x = 8, y = 0.8*max(true.dist),
+           label = paste("p =", round(ks.MOM[[2]],3)))
