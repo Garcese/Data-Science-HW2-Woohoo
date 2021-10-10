@@ -1,0 +1,793 @@
+\documentclass{article}
+\usepackage{amsmath} %This allows me to use the align functionality.
+                     %If you find yourself trying to replicate
+                     %something you found online, ensure you're
+                     %loading the necessary packages!
+\usepackage{amsfonts}%Math font
+\usepackage{graphicx}%For including graphics
+\usepackage{hyperref}%For Hyperlinks
+\hypersetup{colorlinks = true,citecolor=black}
+\usepackage{natbib}         %For the bibliography
+\bibliographystyle{apalike} %For the bibliography
+\bibliography{References}   %ADDED
+\usepackage[margin=1.0in]{geometry}
+\usepackage{float}
+\begin{document}
+\noindent \textbf{MA 354: Data Analysis -- Fall 2021 -- Due 10/8 at 5p}\\%\\ gives you a new line
+\noindent \textbf{Homework 2:}\vspace{1em}\\
+
+<< message=FALSE, warning=FALSE>>=
+# Loading libraries
+library(tidyverse)
+library(patchwork)
+library(e1071)
+library(ggplot2)
+@
+
+
+\newpage
+\begin{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  Question 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item\label{Q3} Select a discrete distribution (not the Poisson). It does not 
+  have to be one that we cover in the notes! To explore the PMF of your distribution, 
+  specify two sets of parameter(s) for your distribution.
+  \begin{enumerate}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (a)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item \textbf{History} Discuss what types of random variables are modeled with 
+  your distribution. Be sure to include a discussion about the support and ensure
+  to provide the mass function, and CDF. This requires some internet research -- 
+  what's the history of the distribution, why was it created and named? What are
+  some exciting applications of this distribution? Cite all of your sources.\\
+  \textbf{Solution:}
+  
+  Let us consider the binomial distribution. The binomial distribution is a discrete distribution that models the number of successes of $n$ Bernoulli trials. It is used to model any experiment of the sort when we can denote one outcome as "success" or "outcome of interest", provided that this outcome has a set probability of happening. Examples of experiments that can be modeled using the binomial distribution include, flipping a coin (pick heads or tails to be our success), drawing a card from a standard deck (consider some card a success), etc.
+  Consider that we perform an experiment a total number of $n$ times. We can have $0$ successes or $n$ successes, as well as everything in between. So, the support of the distribution goes from $0$ to $n$, and has $n+1$ elements. Per Philippou and Antzoulakos, here are the PMF and the CDF for the distribution. % CITE PHILIPPOU AND ANTZOULAKOS
+  
+  PMF:
+  $$f(x) = P(X=x) = \binom{n}{x} p^x q^{n-x}, x= \{0,1,2, \cdots, n\}$$
+  CDF:
+  $$F(x) = P(X \leq x) = \sum_{i=0}^{x} \binom{n}{i} p^i q^{n-i}$$
+  
+The distribution was derived by Jacob Bernoulli, with special cases being derived by Blaise Pascal. The name of the distribution comes from the binomial theorem. % CITE PHILIPPOU AND ANTZOULAKOS, WIKIPEDIA
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (b)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item Show that you have a valid PMF. You can show this approximately by 
+	calculating the series in a repeat loop until probability mass evaluations are 
+	infinitesimally small.\\
+	\textbf{Solution:}
+<<>>=
+# Specifying two sets of parameters:
+
+# SET 1 (trials = 40, probability = 0.5)
+t1 <- 40
+prob1 <- 0.5
+
+# SET 2 (trials = 20, probability = 0.25)
+t2 <- 20
+prob2 <- 0.25
+
+@
+
+We show the validity of a PMF by adding up all the individual probabilities and checking to see if they add up to zero.
+
+<<>>=
+# Let's check this for the first set:
+
+x <- 0                     # first possible number of successes is zero
+v <- NULL                  # creating a null vector to append the probabilities to
+repeat{
+  a <- dbinom(x,t1,prob1)  # dbinom function takes value and returns probability
+  v <- append (v,a)        # adding an element to v with each loop
+  x <- x + 1               # considering the next possible number of successes
+  if(sum(v)>=0.999999999){ # mimicking "infinitesimally small"
+    break
+  }
+}
+print(sum(v))              # sum of all the probabilities should equal 1
+
+
+# Now let's check it for the second set:
+
+x <- 0                     # first possible nr. of success is zero
+v <- NULL                  # creating a null vector to append the probabilities to
+repeat{
+  a <- dbinom(x,t2,prob2)  # dbinom function takes value and returns probability
+  v <- append (v,a)        # adding an element to v with each loop
+  x <- x + 1               # considering the next possible number of successes
+  if(sum(v)>=0.999999999){ # mimicking "infinitesimally small"
+    break
+  }
+}
+print(sum(v))              # sum of all the probabilities should equal 1
+
+@
+  \hfill $\Box$ 
+  \vskip 5pt
+  
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (c)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item Find the median for your two sets of parameter(s). Conduct some research 
+	to find the median based on our PMF to confirm that your numerical approach is
+	correct.\\
+	\textbf{Solution:}
+<<>>=
+
+# Median for the first set (median = 50th percentile)
+qbinom(0.5, t1, prob1)
+
+# Median for the second set (median = 50th percentile)
+qbinom(0.5, t2, prob2)
+
+@
+
+Theoretically, if np is an integer, then the median equals mp, which supports our results. % CITE https://en.wikipedia.org/wiki/Binomial_distribution#Median
+
+  \hfill $\Box$ 
+  \vskip 5pt
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (d)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\item \label{q3PMF} Graph the PMF for several values of the parameter(s) 
+	including the two sets you specified. What does changing the parameter(s) do 
+	to the shape of the PMF?\\
+	\textbf{Solution:}
+<<>>=
+
+# Graphing the PMF for the first set
+x1 <- 0:t1   # for any number of trials t, there are t+1 possible successes.
+p1 <- dbinom(x1,t1,prob1) # dbinom function takes value and returns probability
+
+pmf1 <- qplot(x1,                # telling R to plot x
+              weight = p1,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t1+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = "PMF, first set of parameters",
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Graphing the PMF for the second set
+x2 <- 0:t2   # for any number of trials t, there are t+1 possible successes.
+p2 <- dbinom(x2,t2,prob2) # dbinom function takes value and returns probability
+
+pmf2 <- qplot(x2,                # telling R to plot x
+              weight = p2,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t2+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = "PMF, second set of parameters",
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Displaying the graphs
+
+pmf1+pmf2 +plot_layout(ncol=1)
+
+
+# Let's keep the number of trials t constant to evaluate how different p's change the PMF.
+
+# a) Parameters: t=20, prob=0.15
+t3 <- 20
+prob3 <- 0.15
+
+x3 <- 0:t3  # for any number of trials t, there are t+1 possible successes
+p3 <- dbinom(x3,t3,prob3) # dbinom function takes value and returns probability
+
+pmf3 <- qplot(x3,                # telling R to plot x
+              weight = p3,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t3+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t3, "| probability = ", prob3),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# b) Parameters: t = 20, prob=0.35
+t4 <- 20
+prob4 <- 0.35
+
+x4 <- 0:t4  # for any number of trials t, there are t+1 possible successes
+p4 <- dbinom(x4,t4,prob4) # dbinom function takes value and returns probability
+
+pmf4 <- qplot(x4,                # telling R to plot x
+              weight = p4,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t4+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t4, "| probability = ", prob4),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# c) Parameters: t=20, prob=0.65
+t5 <- 20
+prob5 <- 0.65
+
+x5 <- 0:t5  # for any number of trials t there are t+1 possible successes
+p5 <- dbinom(x5,t5,prob5) # dbinom function takes value and returns probability
+
+pmf5 <- qplot(x5,                # telling R to plot x
+              weight = p5,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t5+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t5, "| probability = ", prob5),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# d) Parameters: t=20, prob=0.85
+t6 <- 20
+prob6 <-0.85
+
+x6 <- 0:t6  # for any number of trials t, there are t+1 possible successes
+p6 <- dbinom(x6,t6,prob6) # dbinom function takes value and returns probability
+
+pmf6 <- qplot(x6,                # telling R to plot x
+              weight = p6,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t6+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t6, "| probability = ", prob6),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Displaying the graphs:
+(pmf3+pmf4)/(pmf5+pmf6)
+
+@
+
+We notice that, as p gets larger, the distribution shifts more and more to the right.\\
+
+<<>>=
+# Now, let's keep p constant to evaluate how different t's change the PMF.
+
+# a) Parameters: t=5, prob=0.35
+t7 <- 5
+prob7 <- 0.35
+
+x7 <- 0:t7  # for any number of trials t, there are t+1 possible successes
+p7 <- dbinom(x7,t7,prob7) # dbinom function takes value and returns probability
+
+pmf7 <- qplot(x7,                # telling R to plot x
+              weight = p7,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t7+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t7, "| probability = ", prob7),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# b) Parameters: t=10, prob=0.35
+t8 <- 10
+prob8 <- 0.35
+
+x8 <- 0:t8  # for any number of trials t, there are t+1 possible successes
+p8 <- dbinom(x8,t8,prob8) # dbinom function takes value and returns probability
+
+pmf8 <- qplot(x8,                # telling R to plot x
+              weight = p8,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t8+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t8, "| probability = ", prob8),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# c) Parameters: t=25, prob=0.35
+t9 <- 25
+prob9 <- 0.35
+
+x9 <- 0:t9  # for any number of trials t, there are t+1 possible successes
+p9 <- dbinom(x9,t9,prob9) # dbinom function takes value and returns probability
+
+pmf9 <- qplot(x9,                # telling R to plot x
+              weight = p9,       # weighted by the probabilities p
+              geom="histogram",  # telling R we want a histogram
+              bins=t9+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t9, "| probability = ", prob9),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# d) Parameters: t=50, prob=0.35
+t10 <- 50
+prob10 <- 0.35
+
+x10 <- 0:t10  # for any number of trials t, there are t+1 possible successes
+p10 <- dbinom(x10,t10,prob10) # dbinom function takes value and returns probability
+
+pmf10 <- qplot(x10,                # telling R to plot x
+              weight = p10,        # weighted by the probabilities p
+              geom="histogram",    # telling R we want a histogram
+              bins=t10+1,          # we have t+1 possible successes
+              col=I("black"),      # histogram border color
+              main = paste("trials = ",t10, "| probability = ", prob10),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# Displaying the graphs
+(pmf7+pmf8)/(pmf9+pmf10)
+
+@
+
+We observe that increasing the number of trials does not change the shape of the distribution, but it does increase the number of bins.
+  \hfill $\Box$ 
+  \vskip 5pt
+
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (e)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	 \item Graph the CDF for the same values of the parameter(s) as you did in 
+	 Question \ref{q3PMF}. What does changing the parameter(s) do to the shape of 
+	 the CDF? Comment on the aspects of the CDFs that show that the CDF is valid.\\
+	 \textbf{Solution:}
+<<>>=
+
+# Graphing the CDF for the first set
+x1 <- 0:t1   # for any number of trials t, there are t+1 possible successes
+p1 <- dbinom(x1,t1,prob1) # dbinom function takes value and returns probability
+cp1 <- cumsum(p1) # finding the cumulative sum
+
+cdf1 <- qplot(x1,                # telling R to plot x
+              weight = cp1,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t1+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = "CDF, first set of parameters",
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Graphing the CDF for the second set
+x2 <- 0:t2   # for any number of trials t, there are t+1 possible successes
+p2 <- dbinom(x2,t2,prob2) # dbinom function takes value and returns probability
+cp2 <- cumsum(p2) # finding the cumulative sum
+
+cdf2 <- qplot(x2,                # telling R to plot x
+              weight = cp2,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t2+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = "CDF, second set of parameters",
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Displaying the graphs
+
+cdf1+cdf2 +plot_layout(ncol=1)
+
+
+# Let's keep the number of trials t constant to evaluate how different p's change the CDF
+
+# a) Parameters: t=20, prob=0.15
+t3 <- 20
+prob3 <- 0.15
+
+x3 <- 0:t3  # for any number of trials t, there are t+1 possible successes
+p3 <- dbinom(x3,t3,prob3) # dbinom function takes value and returns probability
+cp3 <- cumsum(p3) # finding the cumulative sum
+
+cdf3 <- qplot(x3,                # telling R to plot x
+              weight = cp3,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t3+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t3, "| probability = ", prob3),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# b) Parameters: t=20, prob=0.35
+t4 <- 20
+prob4 <- 0.35
+
+x4 <- 0:t4  # for any number of trials t, there are t+1 possible successes
+p4 <- dbinom(x4,t4,prob4) # dbinom function takes value and returns probability
+cp4 <- cumsum(p4) # finding the cumulative sum
+
+cdf4 <- qplot(x4,                # telling R to plot x
+              weight = cp4,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t4+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t4, "| probability = ", prob4),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# c) Parameters: t=20, prob=0.65
+t5 <- 20
+prob5 <- 0.65
+
+x5 <- 0:t5  # for any number of trials t, there are t+1 possible successes
+p5 <- dbinom(x5,t5,prob5) # dbinom function takes value and returns probability
+cp5 <- cumsum(p5) # finding the cumulative sum
+
+cdf5 <- qplot(x5,                # telling R to plot x
+              weight = cp5,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t5+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t5, "| probability = ", prob5),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# d) Parameters: t=20, prob=0.85
+t6 <- 20
+prob6 <-0.85
+
+x6 <- 0:t6  # for any number of trials t, there are t+1 possible successes
+p6 <- dbinom(x6,t6,prob6) # dbinom function takes value and returns probability
+cp6 <- cumsum(p6) # finding the cumulative sum
+
+cdf6 <- qplot(x6,                # telling R to plot x
+              weight = cp6,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t6+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ", t6, "| probability = ", prob6),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# Displaying the graphs:
+(cdf3+cdf4)/(cdf5+cdf6)
+
+@
+
+As p gets larger, the CDF rises later in the support.\\
+
+<<>>=
+# Now, let's keep p constant to evaluate how different t's change the CDF.
+
+# a) Parameters: t=5, prob=0.35
+t7 <- 5
+prob7 <- 0.35
+
+x7 <- 0:t7  # for any number of trials t, there are t+1 possible successes
+p7 <- dbinom(x7,t7,prob7) # dbinom function takes value and returns probability
+cp7 <- cumsum(p7) # finding the cumulative sum
+
+cdf7 <- qplot(x7,                # telling R to plot x
+              weight = cp7,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t7+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t7, "| probability = ", prob7),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# b) Parameters: t=10, prob=0.35
+t8 <- 10
+prob8 <- 0.35
+
+x8 <- 0:t8  # for any number of trials t, there are t+1 possible successes
+p8 <- dbinom(x8,t8,prob8) # dbinom function takes value and returns probability
+cp8 <- cumsum(p8) # finding the cumulative sum
+
+cdf8 <- qplot(x8,                # telling R to plot x
+              weight = cp8,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t8+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t8, "| probability = ", prob8),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# c) Parameters: t=25, prob=0.35
+t9 <- 25
+prob9 <- 0.35
+
+x9 <- 0:t9  # for any number of trials t, there are t+1 possible successes
+p9 <- dbinom(x9,t9,prob9) # dbinom function takes value and returns probability
+cp9 <- cumsum(p9) # finding the cumulative sum
+
+cdf9 <- qplot(x9,                # telling R to plot x
+              weight = cp9,      # weighted by the cumulative probabilities
+              geom="histogram",  # telling R we want a histogram
+              bins=t9+1,         # we have t+1 possible successes
+              col=I("black"),    # histogram border color
+              main = paste("trials = ",t9, "| probability = ", prob9),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+# d) Parameters: t=50, prob=0.35
+t10 <- 50
+prob10 <- 0.35
+
+x10 <- 0:t10  # for any number of trials t, there are t+1 possible successes
+p10 <- dbinom(x10,t10,prob10) # dbinom function takes value and returns probability
+cp10 <- cumsum(p10) # finding the cumulative sum
+
+cdf10 <- qplot(x10,                # telling R to plot x
+              weight = cp10,       # weighted by the cumulative probabilities
+              geom="histogram",    # telling R we want a histogram
+              bins=t10+1,          # we have t+1 possible successes
+              col=I("black"),      # histogram border color
+              main = paste("trials = ",t10, "| probability = ", prob10),
+              xlab = "Number of Successes",
+              ylab = "Density")
+
+
+# Displaying the graphs
+(cdf7+cdf8)/(cdf9+cdf10)
+
+@		
+		
+Increasing the number of trials does not change the shape of the CDF, but it does increase the number of bins. Note that the CDF is valid since the values start at 0 and end at 1 for each of the graphs.		
+  \hfill $\Box$ 
+  \vskip 5pt 
+	 
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%  Part (f)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \item Generate a random sample of size $n=10, 25, 100$, and $1000$ for your 
+  two sets of parameter(s). In a $4 \times 2$ grid, plot a histogram (with bin 
+  size 1) of each set of data and superimpose the true mass function at the 
+  specified parameter values. Interpret the results.\\
+  	\textbf{Solution:}
+<<>>=
+##########################
+# For SET 1
+##########################
+
+# Insert parameters:
+n <- 10   # number of values to generate
+t <- 40   # number of trials
+p <- 0.5  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf1 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background                 
+
+
+# Insert parameters:
+n <- 25   # number of values to generate
+t <- 40   # number of trials
+p <- 0.5  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf2 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background                 
+
+
+# Insert parameters:
+n <- 100   # number of values to generate
+t <- 40   # number of trials
+p <- 0.5  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf3 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background                 
+
+
+# Insert parameters:
+n <- 1000   # number of values to generate
+t <- 40   # number of trials
+p <- 0.5  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf4 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background  
+
+
+(pmf1+pmf2)/(pmf3+pmf4)
+
+#################################
+# For SET 2
+#################################
+
+# Insert parameters:
+n <- 10    # number of values to generate
+t <- 20    # number of trials
+p <- 0.25  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf5 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background                 
+
+
+# Insert parameters:
+n <- 25    # number of values to generate
+t <- 20    # number of trials
+p <- 0.25  # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf6 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background    
+
+# Insert parameters:
+n <- 100    # number of values to generate
+t <- 20     # number of trials
+p <- 0.25   # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf7 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background    
+
+# Insert parameters:
+n <- 1000    # number of values to generate
+t <- 20      # number of trials
+p <- 0.25    # probability of success for each trial
+
+sample <- rbinom(n,t,p)  # store the sample
+ggdat <- data.frame(prop.table(table(sample)))  # make a relative frequency table
+ggdat$sample <- as.numeric(as.character(ggdat$sample)) # converting factor into numeric
+                                                       # while preserving value
+ggdat$prob = dbinom(ggdat$sample, t, p)  # calculate the true binomial probability
+                                         # of each number of successes
+
+
+pmf8 <- ggplot(ggdat) +
+        geom_bar(aes(x=sample, y=Freq),     # plotting the histogram    
+                 stat = "identity",
+                 color = "black",
+                 fill = "grey") +
+        geom_line(aes(x=sample, y=prob),    # plotting the true mass function
+                  color = "red") +
+        xlab("Number of Successes") +       # x axis label
+        ylab("Density") +                   # y axis label
+        ggtitle("Binomial Distribution",
+                subtitle = paste("trials = ", n, ", probability = ", p)) + # adding title to plot
+        geom_hline(yintercept=0) +          # adding a line for the x-axis
+        theme_bw()                          # removes grey background   
+
+
+(pmf5+pmf6)/(pmf7+pmf8)
+@
+
+In both cases, we see that, as we increase the sample size, our stimulations get closer and closer to the true mass function for the binomial distribution.
+  \hfill $\Box$ 
+  \vskip 5pt
+  
+	\end{enumerate}
+
+\end{enumerate}
+
+\newpage
+\bibliography{bib}
+
+\end{document}
