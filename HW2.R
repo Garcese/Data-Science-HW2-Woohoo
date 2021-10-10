@@ -94,7 +94,7 @@ find.MOM.MLE = function(n, par){
   #Note that I am plotting relative frequency. I converted density to 
   #Relative Frequency by multiplying with bin width.
   ks.MOM = ks.test(estimated.MOM, Density, alternative = "two.sided")
-  plot.MOM = plot_MOM +
+  plot_MOM = plot_MOM +
     annotate("text", x = 8, y = 0.18, label = paste("p =", round(ks.MOM[[2]],3)))
   
   estimated.MLE = rgamma(n, shape = MLE$par[1], scale = MLE$par[2])
