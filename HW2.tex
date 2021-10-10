@@ -1,4 +1,54 @@
-\documentclass{article}
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 \usepackage{amsmath} %This allows me to use the align functionality.
                      %If you find yourself trying to replicate
                      %something you found online, ensure you're
@@ -11,6 +61,7 @@
 \bibliographystyle{apalike}%For the bibliography
 \usepackage[margin=1.0in]{geometry}
 \usepackage{float}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 \noindent \textbf{MA 354: Data Analysis -- Fall 2021 -- Due 10/8 at 5p}\\%\\ gives you a new line
 \noindent \textbf{Homework 2:}\vspace{1em}\\
@@ -234,44 +285,74 @@ each other complete the homework in collaboration.
   two sets of parameter(s). Calculate the sample mean, standard deviation, 
   skewness, and kurtosis. Interpret the results.\\
   \textbf{Solution:}
-  <<>>=
-  library(e1071) #allows skewness and kurtosis
-  #The two sets of parameters are -
-  #40 coin tosses with the success being a heads 
-  set.seed(345) #helps with testing again
-  t1 = 40
-  prob1 = 0.5
-  #20 rolls of a D4 with success being a 1 rolled
-  t2 = 20
-  prob2 = 0.25
-  #generating each set of data for each parameter
-  n.10.1 <- rbinom(10, t1, prob1)
-  n.10.2 <- rbinom(10, t2, prob2)
-  n.25.1 <- rbinom(25, t1, prob1)
-  n.25.2 <- rbinom(25, t2, prob2)
-  n.100.1 <- rbinom(100, t1, prob1)
-  n.100.2 <- rbinom(100, t2, prob2)
-  n.1000.1 <- rbinom(1000, t1, prob1)
-  n.1000.2 <- rbinom(1000, t2, prob2)
-  #making a dataframe of the samples
-  stat1 <- data.frame(n.10.1,
-                      n.25.1,
-                      n.100.1,
-                      n.1000.1,
-                      n.10.2,
-                      n.25.2,
-                      n.100.2,
-                      n.1000.2)
-  #applying the R functions and listing the results
-  #Mean
-  apply(stat1, 2, mean)
-  #Standard Deviation
-  apply(stat1, 2, sd)
-  #Skewness
-  apply(stat1, 2, skewness)
-  #kurtosis
-  apply(stat1, 2, kurtosis)
-  @
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(e1071)} \hlcom{#allows skewness and kurtosis}
+\hlcom{#The two sets of parameters are -}
+\hlcom{#40 coin tosses with the success being a heads }
+\hlkwd{set.seed}\hlstd{(}\hlnum{345}\hlstd{)} \hlcom{#helps with testing again}
+\hlstd{t1} \hlkwb{=} \hlnum{40}
+\hlstd{prob1} \hlkwb{=} \hlnum{0.5}
+\hlcom{#20 rolls of a D4 with success being a 1 rolled}
+\hlstd{t2} \hlkwb{=} \hlnum{20}
+\hlstd{prob2} \hlkwb{=} \hlnum{0.25}
+\hlcom{#generating each set of data for each parameter}
+\hlstd{n.10.1} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{10}\hlstd{, t1, prob1)}
+\hlstd{n.10.2} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{10}\hlstd{, t2, prob2)}
+\hlstd{n.25.1} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{25}\hlstd{, t1, prob1)}
+\hlstd{n.25.2} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{25}\hlstd{, t2, prob2)}
+\hlstd{n.100.1} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{100}\hlstd{, t1, prob1)}
+\hlstd{n.100.2} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{100}\hlstd{, t2, prob2)}
+\hlstd{n.1000.1} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1000}\hlstd{, t1, prob1)}
+\hlstd{n.1000.2} \hlkwb{<-} \hlkwd{rbinom}\hlstd{(}\hlnum{1000}\hlstd{, t2, prob2)}
+\hlcom{#making a dataframe of the samples}
+\hlstd{stat1} \hlkwb{<-} \hlkwd{data.frame}\hlstd{(n.10.1,}
+                    \hlstd{n.25.1,}
+                    \hlstd{n.100.1,}
+                    \hlstd{n.1000.1,}
+                    \hlstd{n.10.2,}
+                    \hlstd{n.25.2,}
+                    \hlstd{n.100.2,}
+                    \hlstd{n.1000.2)}
+\hlcom{#applying the R functions and listing the results}
+\hlcom{#Mean}
+\hlkwd{apply}\hlstd{(stat1,} \hlnum{2}\hlstd{, mean)}
+\end{alltt}
+\begin{verbatim}
+##   n.10.1   n.25.1  n.100.1 n.1000.1   n.10.2   n.25.2  n.100.2 n.1000.2 
+##    19.60    20.52    19.84    19.88     5.90     4.28     4.98     5.01
+\end{verbatim}
+\begin{alltt}
+\hlcom{#Standard Deviation}
+\hlkwd{apply}\hlstd{(stat1,} \hlnum{2}\hlstd{, sd)}
+\end{alltt}
+\begin{verbatim}
+##   n.10.1   n.25.1  n.100.1 n.1000.1   n.10.2   n.25.2  n.100.2 n.1000.2 
+## 2.108185 3.603135 3.121561 3.203102 2.344247 1.662638 1.828372 1.886653
+\end{verbatim}
+\begin{alltt}
+\hlcom{#Skewness}
+\hlkwd{apply}\hlstd{(stat1,} \hlnum{2}\hlstd{, skewness)}
+\end{alltt}
+\begin{verbatim}
+##      n.10.1      n.25.1     n.100.1    n.1000.1      n.10.2      n.25.2 
+##  0.27663605 -0.23458002  0.22147552  0.08987464 -0.29900331  0.59578386 
+##     n.100.2    n.1000.2 
+##  0.02951240  0.19109951
+\end{verbatim}
+\begin{alltt}
+\hlcom{#kurtosis}
+\hlkwd{apply}\hlstd{(stat1,} \hlnum{2}\hlstd{, kurtosis)}
+\end{alltt}
+\begin{verbatim}
+##      n.10.1      n.25.1     n.100.1    n.1000.1      n.10.2      n.25.2 
+## -0.70875300 -0.49916581  0.01274940 -0.05466433 -1.40963737  0.94517654 
+##     n.100.2    n.1000.2 
+## -0.25228810 -0.04125743
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
   The mean is usually close to the the actual mean regardless of number of 
   samples. It would make sense for the standard deviation to increase with the
   sample size, since there are more values. 
@@ -287,98 +368,111 @@ each other complete the homework in collaboration.
   estimated distribution, and superimpose the true distribution in both.\\
    \textbf{Solution: }
    The functions that are used for parts c through f are listed below.
-  <<message = FALSE, warning = FALSE, fig.dim=c(12,8)>>=
-  library(tidyverse)
-  library(patchwork)
-  binom.mom <- function(par, data){#calculates binomial MOM Estimator
-    #adapted from Prof. Cipolli's Chapter 7 notes
-    n <- par[1] #par[1] has the size n
-    p <- par[2] # par[2] has the probability p
-    #Here, k = 2 since estimator is highly variable at k>2
-    #First two population moments
-    EX1 <- n*p 
-    EX2 <- n*p*(1-p + n*p) #moments found online cite
-    eq1 <- EX1 - mean(data) #sample moment 1
-    eq2 <- EX2 - mean(data^2) #sample moment 2
-    c(eq1, eq2)
-  }
-  # calculates Maximum Likelihood Estimator via negative log likelihood
-  binom.MLE <- function(par, data, neg = T){
-    #adapted from Prof. Cipolli's Chapter 7 notes
-    n <- par[1]
-    p <- par[2]
-    #sums up the probability mass function for the sample 
-    MLE <- sum(dbinom(x = data, size = n, prob = p, log=TRUE))
-    ifelse(!neg,MLE,-MLE) #just in case neg is changed 
-  }
-  
-  library(nleqslv)# used to calculate MOM 
-  
-  find.binom.mom.mle <-function(n, par){ 
-    #function that calculates and plots MOM and MLE
-  Sample = rbinom(n, size = par[1], prob =par[2]) 
-  #creating the sample for this set of parameters
-  moms<-nleqslv(x = c(par[1], par[2]), #passes in size and probability
-  fn = binom.mom,
-  data=Sample)
-  #this essentially minimizes the difference between the sample and population 
-  #moments. It then returns the corresponding n and p
-  mles <- optim(fn = binom.MLE,
-                par = c(par[1], par[2]),
-                data = Sample)
-  #mles optimizes the MLE for the given parameters
-    plot_mom = ggplot() +
-      geom_histogram(aes(x = Sample,
-                         y = ..density..),
-                     binwidth = 1, 
-                     color = "black", 
-                     fill ="lightgreen") +
-      geom_hline(yintercept = 0) +
-      theme_bw() + 
-      xlim(0, par[1]) + 
-      geom_linerange(size = 0.7, aes(x=0:par[1], 
-                         ymin=0, 
-                         ymax=dbinom(0:par[1], 
-                                     size = round(moms$x[1]),
-                                     prob = moms$x[2]))) +
-      xlab("Number of successess") +
-      ylab("Proportion") + 
-      ggtitle(paste("Methods of Moments Estimator n =", n, sep=" ")) +
-      theme(plot.title = element_text(hjust = 0.5, size = 25),
-            axis.text=element_text(size=20),
-            axis.title.x = element_text(size = 20),
-            axis.title.y = element_text(size = 20))
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(tidyverse)}
+\hlkwd{library}\hlstd{(patchwork)}
+\hlstd{binom.mom} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{par}\hlstd{,} \hlkwc{data}\hlstd{)\{}\hlcom{#calculates binomial MOM Estimator}
+  \hlcom{#adapted from Prof. Cipolli's Chapter 7 notes}
+  \hlstd{n} \hlkwb{<-} \hlstd{par[}\hlnum{1}\hlstd{]} \hlcom{#par[1] has the size n}
+  \hlstd{p} \hlkwb{<-} \hlstd{par[}\hlnum{2}\hlstd{]} \hlcom{# par[2] has the probability p}
+  \hlcom{#Here, k = 2 since estimator is highly variable at k>2}
+  \hlcom{#First two population moments}
+  \hlstd{EX1} \hlkwb{<-} \hlstd{n}\hlopt{*}\hlstd{p}
+  \hlstd{EX2} \hlkwb{<-} \hlstd{n}\hlopt{*}\hlstd{p}\hlopt{*}\hlstd{(}\hlnum{1}\hlopt{-}\hlstd{p} \hlopt{+} \hlstd{n}\hlopt{*}\hlstd{p)} \hlcom{#moments found online cite}
+  \hlstd{eq1} \hlkwb{<-} \hlstd{EX1} \hlopt{-} \hlkwd{mean}\hlstd{(data)} \hlcom{#sample moment 1}
+  \hlstd{eq2} \hlkwb{<-} \hlstd{EX2} \hlopt{-} \hlkwd{mean}\hlstd{(data}\hlopt{^}\hlnum{2}\hlstd{)} \hlcom{#sample moment 2}
+  \hlkwd{c}\hlstd{(eq1, eq2)}
+\hlstd{\}}
+\hlcom{# calculates Maximum Likelihood Estimator via negative log likelihood}
+\hlstd{binom.MLE} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{par}\hlstd{,} \hlkwc{data}\hlstd{,} \hlkwc{neg} \hlstd{= T)\{}
+  \hlcom{#adapted from Prof. Cipolli's Chapter 7 notes}
+  \hlstd{n} \hlkwb{<-} \hlstd{par[}\hlnum{1}\hlstd{]}
+  \hlstd{p} \hlkwb{<-} \hlstd{par[}\hlnum{2}\hlstd{]}
+  \hlcom{#sums up the probability mass function for the sample }
+  \hlstd{MLE} \hlkwb{<-} \hlkwd{sum}\hlstd{(}\hlkwd{dbinom}\hlstd{(}\hlkwc{x} \hlstd{= data,} \hlkwc{size} \hlstd{= n,} \hlkwc{prob} \hlstd{= p,} \hlkwc{log}\hlstd{=}\hlnum{TRUE}\hlstd{))}
+  \hlkwd{ifelse}\hlstd{(}\hlopt{!}\hlstd{neg,MLE,}\hlopt{-}\hlstd{MLE)} \hlcom{#just in case neg is changed }
+\hlstd{\}}
 
-    plot_mle = ggplot() +
-      geom_histogram(aes(x = Sample,
-                         y = ..density..),
-                     binwidth = 1, 
-                     color = "black", 
-                     fill ="lightgreen") +
-      geom_hline(yintercept = 0) +
-      theme_bw() + 
-      xlim(0, par[1]) + 
-      geom_linerange(size = 0.7,aes(x=0:par[1], 
-                         ymin=0, 
-                         ymax=dbinom(0:par[1], 
-                                     size = round(mles$par[1]),
-                                     prob = mles$par[2]))) +
-      xlab("Number of successess") +
-      ylab("Proportion") + 
-      ggtitle(paste("Maximum Likelihood Estimator n =", n, sep=" ")) +
-      theme(plot.title = element_text(hjust = 0.5, size = 25),
-            axis.text=element_text(size=20),
-            axis.title.x = element_text(size = 20),
-            axis.title.y = element_text(size = 20))
-      
-        plot_mom+plot_mle
-  }
-  @
+\hlkwd{library}\hlstd{(nleqslv)}\hlcom{# used to calculate MOM }
+
+\hlstd{find.binom.mom.mle} \hlkwb{<-}\hlkwa{function}\hlstd{(}\hlkwc{n}\hlstd{,} \hlkwc{par}\hlstd{)\{}
+  \hlcom{#function that calculates and plots MOM and MLE}
+\hlstd{Sample} \hlkwb{=} \hlkwd{rbinom}\hlstd{(n,} \hlkwc{size} \hlstd{= par[}\hlnum{1}\hlstd{],} \hlkwc{prob} \hlstd{=par[}\hlnum{2}\hlstd{])}
+\hlcom{#creating the sample for this set of parameters}
+\hlstd{moms}\hlkwb{<-}\hlkwd{nleqslv}\hlstd{(}\hlkwc{x} \hlstd{=} \hlkwd{c}\hlstd{(par[}\hlnum{1}\hlstd{], par[}\hlnum{2}\hlstd{]),} \hlcom{#passes in size and probability}
+\hlkwc{fn} \hlstd{= binom.mom,}
+\hlkwc{data}\hlstd{=Sample)}
+\hlcom{#this essentially minimizes the difference between the sample and population }
+\hlcom{#moments. It then returns the corresponding n and p}
+\hlstd{mles} \hlkwb{<-} \hlkwd{optim}\hlstd{(}\hlkwc{fn} \hlstd{= binom.MLE,}
+              \hlkwc{par} \hlstd{=} \hlkwd{c}\hlstd{(par[}\hlnum{1}\hlstd{], par[}\hlnum{2}\hlstd{]),}
+              \hlkwc{data} \hlstd{= Sample)}
+\hlcom{#mles optimizes the MLE for the given parameters}
+  \hlstd{plot_mom} \hlkwb{=} \hlkwd{ggplot}\hlstd{()} \hlopt{+}
+    \hlkwd{geom_histogram}\hlstd{(}\hlkwd{aes}\hlstd{(}\hlkwc{x} \hlstd{= Sample,}
+                       \hlkwc{y} \hlstd{= ..density..),}
+                   \hlkwc{binwidth} \hlstd{=} \hlnum{1}\hlstd{,}
+                   \hlkwc{color} \hlstd{=} \hlstr{"black"}\hlstd{,}
+                   \hlkwc{fill} \hlstd{=}\hlstr{"lightgreen"}\hlstd{)} \hlopt{+}
+    \hlkwd{geom_hline}\hlstd{(}\hlkwc{yintercept} \hlstd{=} \hlnum{0}\hlstd{)} \hlopt{+}
+    \hlkwd{theme_bw}\hlstd{()} \hlopt{+}
+    \hlkwd{xlim}\hlstd{(}\hlnum{0}\hlstd{, par[}\hlnum{1}\hlstd{])} \hlopt{+}
+    \hlkwd{geom_linerange}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{0.7}\hlstd{,} \hlkwd{aes}\hlstd{(}\hlkwc{x}\hlstd{=}\hlnum{0}\hlopt{:}\hlstd{par[}\hlnum{1}\hlstd{],}
+                       \hlkwc{ymin}\hlstd{=}\hlnum{0}\hlstd{,}
+                       \hlkwc{ymax}\hlstd{=}\hlkwd{dbinom}\hlstd{(}\hlnum{0}\hlopt{:}\hlstd{par[}\hlnum{1}\hlstd{],}
+                                   \hlkwc{size} \hlstd{=} \hlkwd{round}\hlstd{(moms}\hlopt{$}\hlstd{x[}\hlnum{1}\hlstd{]),}
+                                   \hlkwc{prob} \hlstd{= moms}\hlopt{$}\hlstd{x[}\hlnum{2}\hlstd{])))} \hlopt{+}
+    \hlkwd{xlab}\hlstd{(}\hlstr{"Number of successess"}\hlstd{)} \hlopt{+}
+    \hlkwd{ylab}\hlstd{(}\hlstr{"Proportion"}\hlstd{)} \hlopt{+}
+    \hlkwd{ggtitle}\hlstd{(}\hlkwd{paste}\hlstd{(}\hlstr{"Methods of Moments Estimator n ="}\hlstd{, n,} \hlkwc{sep}\hlstd{=}\hlstr{" "}\hlstd{))} \hlopt{+}
+    \hlkwd{theme}\hlstd{(}\hlkwc{plot.title} \hlstd{=} \hlkwd{element_text}\hlstd{(}\hlkwc{hjust} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{size} \hlstd{=} \hlnum{25}\hlstd{),}
+          \hlkwc{axis.text}\hlstd{=}\hlkwd{element_text}\hlstd{(}\hlkwc{size}\hlstd{=}\hlnum{20}\hlstd{),}
+          \hlkwc{axis.title.x} \hlstd{=} \hlkwd{element_text}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{20}\hlstd{),}
+          \hlkwc{axis.title.y} \hlstd{=} \hlkwd{element_text}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{20}\hlstd{))}
+
+  \hlstd{plot_mle} \hlkwb{=} \hlkwd{ggplot}\hlstd{()} \hlopt{+}
+    \hlkwd{geom_histogram}\hlstd{(}\hlkwd{aes}\hlstd{(}\hlkwc{x} \hlstd{= Sample,}
+                       \hlkwc{y} \hlstd{= ..density..),}
+                   \hlkwc{binwidth} \hlstd{=} \hlnum{1}\hlstd{,}
+                   \hlkwc{color} \hlstd{=} \hlstr{"black"}\hlstd{,}
+                   \hlkwc{fill} \hlstd{=}\hlstr{"lightgreen"}\hlstd{)} \hlopt{+}
+    \hlkwd{geom_hline}\hlstd{(}\hlkwc{yintercept} \hlstd{=} \hlnum{0}\hlstd{)} \hlopt{+}
+    \hlkwd{theme_bw}\hlstd{()} \hlopt{+}
+    \hlkwd{xlim}\hlstd{(}\hlnum{0}\hlstd{, par[}\hlnum{1}\hlstd{])} \hlopt{+}
+    \hlkwd{geom_linerange}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{0.7}\hlstd{,}\hlkwd{aes}\hlstd{(}\hlkwc{x}\hlstd{=}\hlnum{0}\hlopt{:}\hlstd{par[}\hlnum{1}\hlstd{],}
+                       \hlkwc{ymin}\hlstd{=}\hlnum{0}\hlstd{,}
+                       \hlkwc{ymax}\hlstd{=}\hlkwd{dbinom}\hlstd{(}\hlnum{0}\hlopt{:}\hlstd{par[}\hlnum{1}\hlstd{],}
+                                   \hlkwc{size} \hlstd{=} \hlkwd{round}\hlstd{(mles}\hlopt{$}\hlstd{par[}\hlnum{1}\hlstd{]),}
+                                   \hlkwc{prob} \hlstd{= mles}\hlopt{$}\hlstd{par[}\hlnum{2}\hlstd{])))} \hlopt{+}
+    \hlkwd{xlab}\hlstd{(}\hlstr{"Number of successess"}\hlstd{)} \hlopt{+}
+    \hlkwd{ylab}\hlstd{(}\hlstr{"Proportion"}\hlstd{)} \hlopt{+}
+    \hlkwd{ggtitle}\hlstd{(}\hlkwd{paste}\hlstd{(}\hlstr{"Maximum Likelihood Estimator n ="}\hlstd{, n,} \hlkwc{sep}\hlstd{=}\hlstr{" "}\hlstd{))} \hlopt{+}
+    \hlkwd{theme}\hlstd{(}\hlkwc{plot.title} \hlstd{=} \hlkwd{element_text}\hlstd{(}\hlkwc{hjust} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{size} \hlstd{=} \hlnum{25}\hlstd{),}
+          \hlkwc{axis.text}\hlstd{=}\hlkwd{element_text}\hlstd{(}\hlkwc{size}\hlstd{=}\hlnum{20}\hlstd{),}
+          \hlkwc{axis.title.x} \hlstd{=} \hlkwd{element_text}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{20}\hlstd{),}
+          \hlkwc{axis.title.y} \hlstd{=} \hlkwd{element_text}\hlstd{(}\hlkwc{size} \hlstd{=} \hlnum{20}\hlstd{))}
+
+      \hlstd{plot_mom}\hlopt{+}\hlstd{plot_mle}
+\hlstd{\}}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
   
-  <<warning = FALSE,fig.dim=c(16,9)>>=
-   find.binom.mom.mle(10, c(t1, prob1))
-   find.binom.mom.mle(10, c(t2, prob2))
-  @
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+ \hlkwd{find.binom.mom.mle}\hlstd{(}\hlnum{10}\hlstd{,} \hlkwd{c}\hlstd{(t1, prob1))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-3-1} 
+\begin{kframe}\begin{alltt}
+ \hlkwd{find.binom.mom.mle}\hlstd{(}\hlnum{10}\hlstd{,} \hlkwd{c}\hlstd{(t2, prob2))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-3-2} 
+\end{knitrout}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (d)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -388,10 +482,19 @@ each other complete the homework in collaboration.
   with (1) the method of moments estimated distribution, (2) the maximum likelihood 
   estimated distribution, and superimpose the true distribution in both.\\
   \textbf{Solution:}
-   <<warning = FALSE,fig.dim=c(16,9)>>=
-   find.binom.mom.mle(25, c(t1, prob1))
-   find.binom.mom.mle(25, c(t2, prob2))
-  @
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{find.binom.mom.mle}\hlstd{(}\hlnum{25}\hlstd{,} \hlkwd{c}\hlstd{(t1, prob1))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-4-1} 
+\begin{kframe}\begin{alltt}
+\hlkwd{find.binom.mom.mle}\hlstd{(}\hlnum{25}\hlstd{,} \hlkwd{c}\hlstd{(t2, prob2))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-4-2} 
+\end{knitrout}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (e)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -401,10 +504,19 @@ each other complete the homework in collaboration.
   with (1) the method of moments estimated distribution, (2) the maximum likelihood
   estimated distribution, and superimpose the true distribution in both.\\
   \textbf{Solution:}
-   <<warning = FALSE,fig.dim=c(16,9)>>=
-   find.binom.mom.mle(100, c(t1, prob1))
-   find.binom.mom.mle(100, c(t2, prob2))
-  @
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{find.binom.mom.mle}\hlstd{(}\hlnum{100}\hlstd{,} \hlkwd{c}\hlstd{(t1, prob1))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-1} 
+\begin{kframe}\begin{alltt}
+\hlkwd{find.binom.mom.mle}\hlstd{(}\hlnum{100}\hlstd{,} \hlkwd{c}\hlstd{(t2, prob2))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-5-2} 
+\end{knitrout}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (f)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -414,10 +526,19 @@ each other complete the homework in collaboration.
   with (1) the method of moments estimated distribution, (2) the maximum likelihood
   estimated distribution, and superimpose the true distribution in both.\\
   \textbf{Solution:}
-   <<warning = FALSE,fig.dim=c(16,9)>>=
-   find.binom.mom.mle(1000, c(t1, prob1))
-   find.binom.mom.mle(1000, c(t2, prob2))
-  @
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{find.binom.mom.mle}\hlstd{(}\hlnum{1000}\hlstd{,} \hlkwd{c}\hlstd{(t1, prob1))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} 
+\begin{kframe}\begin{alltt}
+\hlkwd{find.binom.mom.mle}\hlstd{(}\hlnum{1000}\hlstd{,} \hlkwd{c}\hlstd{(t2, prob2))}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-2} 
+\end{knitrout}
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%  Part (g)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
